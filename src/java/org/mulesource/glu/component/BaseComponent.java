@@ -33,8 +33,7 @@ public abstract class BaseComponent
 
     private      GluHttpRequest                      httpRequest;
     private      String                              resourceName;
-    private      String                              accountName;
-    private      String                              password; 
+    private      BaseComponentCapabilities           baseCapabilities;
     
     private      boolean                             annotationsHaveBeenParsed = false;
     // We use the following to record the order of parameters as well as their
@@ -47,10 +46,14 @@ public abstract class BaseComponent
     
     public BaseComponent()
     {
-        this.resourceName = null;
-        this.httpRequest  = null;
-        this.accountName  = "";
-        this.password     = "";
+        this.resourceName     = null;
+        this.httpRequest      = null;
+        this.baseCapabilities = null;
+    }
+    
+    public void setBaseCapabilities(BaseComponentCapabilities baseCapabilities)
+    {
+        this.baseCapabilities = baseCapabilities;
     }
     
     private ComponentDescriptor getComponentDescriptor() throws GluException
@@ -118,7 +121,7 @@ public abstract class BaseComponent
          * time parameters.
          */
         for (Field f: myclass.getFields()) {
-            ResourceParameter fa = f.getAnnotation(ResourceParameter.class);
+            Parameter fa = f.getAnnotation(Parameter.class);
             if (fa != null) {
                 String  fieldName   = f.getName();
                 String  paramName   = fa.name();
@@ -127,7 +130,7 @@ public abstract class BaseComponent
                 boolean required    = true;
                 
                 // Check if we have a default value and set that one as well
-                ResourceParameterDefault fad = f.getAnnotation(ResourceParameterDefault.class);
+                Default fad = f.getAnnotation(Default.class);
                 if (fad != null) {
                     defaultVal = fad.value();
                     required   = false;
@@ -218,17 +221,30 @@ public abstract class BaseComponent
         return Settings.PREFIX_RESOURCE + "/" + getMyResourceName();
     }
     
-    // TODO: getFileStorage()
-
-    public void httpSetCredentials(String accountName, String password)
+    public FileStore getFileStorage()
     {
-        this.accountName = accountName;
-        this.password    = password;
+        return baseCapabilities.getFileStorage();
+    }
+
+    public FileStore getFileStorage(String namespace)
+    {
+        return baseCapabilities.getFileStorage(namespace);
     }
     
-    // TODO: httpGet()
+    public void httpSetCredentials(String accountName, String password)
+    {
+        baseCapabilities.httpSetCredentials(accountName, password);
+    }
     
-    // TODO: httpPost()
+    public HttpResult httpGet(String url)
+    {
+        return baseCapabilities.httpGet(url);
+    }
+    
+    public HttpResult httpPost(String url, String data)
+    {
+        return baseCapabilities.httpPost(url, data);
+    }
     
     private HashMap<String, Object> changeParamsToPlainDict(HashMap<String, ParameterDef> paramDict)
     {

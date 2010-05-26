@@ -220,18 +220,18 @@ class MarakanaComponent(BaseComponent):
 
         # Get my parameters
         param_order_id = id
-        code = 200
+        code = HTTP.OK
         if not param_order_id  and  not input:
             # User didn't specify a specific order (and also doesn't POST a new order object),
             # which means we should generate a list of all the orders we have stored.
             data = self.__get_order_list(storage)
         else:
-            if method == "DELETE":
+            if method == HTTP.DELETE_METHOD:
                 if param_order_id:
                     storage.deleteFile(param_order_id)
                     data = "File deleted"
                 else:
-                    code = 400
+                    code = HTTP.BAD_REQUEST
                     data = "Missing order id"
             else:
                 if input:
@@ -250,23 +250,23 @@ class MarakanaComponent(BaseComponent):
                             self.__dict_struct_compare(d, self.__REGISTRATION_ORDER_TEMPLATE)
                             order_id = d['spark-domain']['registration-order']['__attributes']['id']
                     except Exception, e:
-                        return 400, "Malformed request  body: " + str(e)
+                        return HTTP.BAD_REQUEST, "Malformed request  body: " + str(e)
                     
                     # Creating or updating order
                     location_str = "%s/orders/%s" % (self.getMyResourceUri(), order_id)
                     if param_order_id:
                         if param_order_id != order_id:
-                            return 400, "Order ID in URL and message body do not match (%s vs. %s)" % (param_order_id, order_id)
+                            return HTTP.BAD_REQUEST, "Order ID in URL and message body do not match (%s vs. %s)" % (param_order_id, order_id)
                         # Update an already existing order? Throws exception if it does not
                         # exist, which is exactly what we want.
                         dummy_data = storage.loadFile(order_id)
-                        code       = 200
+                        code       = HTTP.OK
                         data       = "Successfully updated: %s" % location_str
                     else:
                         # Creating a new order? We need to extract the order id.
                         if self.getRequest():
                             self.getRequest().setResponseHeader("Location", location_str)
-                        code = 201
+                        code = HTTP.CREATED
                         data = "Successfully stored: %s" % location_str
 
                     # Store the data, but only the dictionary that contains the actual order info.
@@ -300,7 +300,7 @@ class MarakanaComponent(BaseComponent):
             print "customer email: ", customer_email
             print "salesforce URI: ", salesforce_resource_uri
             code, matches = accessResource('%s/contact/data/email/"%s"' % (salesforce_resource_uri, customer_email))
-            if code != 200:
+            if code != HTTP.OK:
                 raise GluException("Error accessing Salesforce resource: " + str(matches))
             print matches
             if top_level_key == 'product-order':
@@ -334,6 +334,6 @@ class MarakanaComponent(BaseComponent):
 
 
         out['summary'] = "%d matches." % match_count
-        return 200, out
+        return HTTP.OK, out
 
 

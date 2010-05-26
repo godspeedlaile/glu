@@ -66,7 +66,7 @@ class GpsWalkerComponent(BaseComponent):
                     "lat"  : lat,
                     "long" : long,
                }
-        code = 200
+        code = HTTP.OK
         return code, data
 
 
@@ -85,6 +85,6 @@ class GpsWalkerComponent(BaseComponent):
         # Getting the coordinates of that city. If the city is unknown
         # then we just return the coordinates for Auckland.
         new_coords = self.CITY_COORDS.get(city_name, self.CITY_COORDS['Auckland'])
-        return 200, new_coords
+        return HTTP.OK, new_coords
 
 

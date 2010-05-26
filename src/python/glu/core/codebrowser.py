@@ -14,7 +14,8 @@ from glu.resources        import makeResource
 from glu.core.basebrowser import BaseBrowser
 from glu.languages        import *
 
-from org.mulesource.glu.util import Url
+from org.mulesource.glu.util          import Url
+from org.mulesource.glu.component.api import HTTP;
 
 def getComponentClass(uri):
     """
@@ -104,7 +105,7 @@ class CodeBrowser(BaseBrowser):
             # Instantiate the component
             component_class = getComponentClass(self.request.getRequestPath())
             if not component_class:
-                return (404, "Unknown component")
+                return (HTTP.NOT_FOUND, "Unknown component")
             component          = component_class()
             component_home_uri = component.getUri()
             self.breadcrums.append((component_name, component_home_uri))
@@ -124,9 +125,9 @@ class CodeBrowser(BaseBrowser):
                     data       = component.getDocs()
                     self.breadcrums.append(("Doc", component_home_uri + "/doc"))
                 else:
-                    return (404, "Unknown code detail")
+                    return (HTTP.NOT_FOUND, "Unknown code detail")
                 
-        return ( 200, data )
+        return ( HTTP.OK, data )
     
     
     def __process_post(self):
@@ -145,7 +146,7 @@ class CodeBrowser(BaseBrowser):
         #
         component_class = getComponentClass(self.request.getRequestPath())
         if not component_class:
-            return (404, "Unknown component")
+            return (HTTP.NOT_FOUND, "Unknown component")
         #component = component_class()
         body = self.request.getRequestBody()
         try:
@@ -153,7 +154,7 @@ class CodeBrowser(BaseBrowser):
         except Exception, e:
             raise GluException("Malformed request body: " + str(e))
         ret_msg = makeResource(component_class, param_dict)
-        return ( 201, ret_msg )
+        return ( HTTP.CREATED, ret_msg )
     
     def process(self):
         """
@@ -164,8 +165,8 @@ class CodeBrowser(BaseBrowser):
         
         """
         method = self.request.getRequestMethod()
-        if method == "GET":
+        if method == HTTP.GET_METHOD:
             (code, data) = self.__process_get()
-        elif method == "POST":
+        elif method == HTTP.POST_METHOD:
             (code, data) = self.__process_post()
         return (code, data)

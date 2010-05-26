@@ -20,6 +20,8 @@ from glu.logger import *
 
 from glu.httpabstraction.base_server import BaseHttpServer, GluHttpRequest
 
+from org.mulesource.glu.component.api import HTTP
+
 from glu.platform_specifics import *
 if PLATFORM == PLATFORM_PYTHON:
     from paste import httpserver
@@ -195,7 +197,7 @@ class PythonHttpRequest(GluHttpRequest):
         
         """
         #buffered_reader = BufferedReader(InputStreamReader(self.__native_req.getRequestBody()));
-        if self.getRequestMethod() in [ "POST", "PUT" ]:
+        if self.getRequestMethod() in [ HTTP.POST_METHOD, HTTP.PUT_METHOD ]:
             fp = self.environ['wsgi.input']
             lines = []
             while True:

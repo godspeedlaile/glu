@@ -40,7 +40,7 @@ class TwitterComponent(BaseComponent):
         """
         # Get the status for this account from Twitter (we get it in JSON format)
         code, data = self.httpGet("http://api.twitter.com/1/users/show.json?screen_name=%s" % accountname)
-        if code == 200:
+        if code == HTTP.OK:
             obj = json.loads(data)
         else:
             return "Problem with Twitter: " + data
@@ -89,9 +89,9 @@ class TwitterComponent(BaseComponent):
         """
         # Get my parameters
         if not input:
-            return 200, self.__get_status(self.account_name)
+            return HTTP.OK, self.__get_status(self.account_name)
         else:
-            return 200, self.__post_status(self.account_name, self.account_password, input)
+            return HTTP.OK, self.__post_status(self.account_name, self.account_password, input)
 
     def timeline(self, method, input):
         """
@@ -116,7 +116,7 @@ class TwitterComponent(BaseComponent):
         # Get my parameters
         self.httpSetCredentials(self.account_name, self.account_password)
         code, obj_str = self.httpGet("http://api.twitter.com/1/statuses/user_timeline.json")
-        if code == 200:
+        if code == HTTP.OK:
             obj = json.loads(obj_str)
         else:
             obj = obj_str

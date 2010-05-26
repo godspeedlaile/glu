@@ -417,7 +417,7 @@ class SalesforceComponent(BaseComponent):
         else:
             raise GluBadRequestException("Unknown query spec: " + spec)
 
-        return 200, data
+        return HTTP.OK, data
  
 
     def contact(self, request, input, params, method):

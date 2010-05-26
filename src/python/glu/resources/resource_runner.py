@@ -8,6 +8,7 @@ import glu.core.codebrowser  # Wanted to be much more selective here, but a circ
                              # We only need getComponentInstance() from this module.
 
 from org.mulesource.glu.exception import *
+from org.mulesource.glu.component.api import HTTP
 from glu.resources  import paramSanityCheck, fillDefaults, convertTypes, \
                            retrieveResourceFromStorage, getResourceUri
 
@@ -15,7 +16,7 @@ from glu.languages import *
 
 
 def _accessComponentService(component, services, complete_resource_def, resource_name, service_name,
-                            positional_params, runtime_param_dict, input, request="GET", method=None, direct_call=False):
+                            positional_params, runtime_param_dict, input, request=None, method=None, direct_call=False):
     """
     Passes control to a service method exposed by a component.
     
@@ -195,7 +196,7 @@ def _getResourceDetails(resource_name):
                 component             = component)
 
      
-def accessResource(resource_uri, input=None, params=None, method="GET"):
+def accessResource(resource_uri, input=None, params=None, method=HTTP.GET_METHOD):
     """
     Access a resource identified by its URI.
     

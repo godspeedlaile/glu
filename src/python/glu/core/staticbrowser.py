@@ -6,6 +6,8 @@ import glu.settings as settings
 
 from glu.core.basebrowser import BaseBrowser
 
+from org.mulesource.glu.component.api import HTTP;
+
         
 class StaticBrowser(BaseBrowser):
     """
@@ -45,7 +47,7 @@ class StaticBrowser(BaseBrowser):
         path = self.request.getRequestPath()[len(settings.PREFIX_STATIC)+1:]
         if ".." in path:
             # Won't allow that
-            return 400, "Invalid path specifier"
+            return HTTP.BAD_REQUEST, "Invalid path specifier"
         if path.endswith("/"):
             path = path[:-1]
             
@@ -53,7 +55,7 @@ class StaticBrowser(BaseBrowser):
             f = open(settings.STATIC_LOCATION + path, "r")
             data = f.read()
             f.close()
-            return 200, data
+            return HTTP.OK, data
         except Exception, e:
-            return 404, "Not found"
+            return HTTP.NOT_FOUND, "Not found"
             

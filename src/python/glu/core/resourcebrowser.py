@@ -9,13 +9,16 @@ import traceback
 # Glu imports
 import glu.settings as settings
 
-from org.mulesource.glu.exception  import *
-from glu.logger                    import *
-from glu.core.basebrowser          import BaseBrowser
-from glu.core.codebrowser          import getComponentInstance
-from glu.resources                 import paramSanityCheck, fillDefaults, makeResource, listResources, \
-                                          retrieveResourceFromStorage, getResourceUri, deleteResourceFromStorage
-from glu.resources.resource_runner import _accessComponentService, _getResourceDetails
+from org.mulesource.glu.exception     import *
+from org.mulesource.glu.component.api import HTTP;
+
+from glu.logger                       import *
+from glu.core.basebrowser             import BaseBrowser
+from glu.core.codebrowser             import getComponentInstance
+from glu.resources                    import paramSanityCheck, fillDefaults, makeResource, listResources, \
+                                             retrieveResourceFromStorage, getResourceUri, deleteResourceFromStorage
+from glu.components.base_capabilities import BaseCapabilities
+from glu.resources.resource_runner    import _accessComponentService, _getResourceDetails
 
 import java.lang.Exception
 
@@ -70,16 +73,16 @@ class ResourceBrowser(BaseBrowser):
         """
         method = self.request.getRequestMethod()
 
-        if method == "GET":
+        if method == HTTP.GET_METHOD:
             # It's the responsibility of the browser class to provide breadcrums
             self.breadcrums = [ ("Home", settings.DOCUMENT_ROOT), ("Resource", settings.PREFIX_RESOURCE) ]
 
-        code = 200
+        code = HTTP.OK
         if self.request.getRequestPath() == settings.PREFIX_RESOURCE:
             #
             # Request to the base URL of all resources (listing resources)
             #
-            if method == "GET":
+            if method == HTTP.GET_METHOD:
                 #
                 # List all the resources
                 #
@@ -102,10 +105,10 @@ class ResourceBrowser(BaseBrowser):
             # is just for the resource itself, not a DELETE to some of the sub-services.
             # If it's just for the resource then there will be only one path element (the
             # resource name).
-            if method == "DELETE"  and  len(path_elems) == 1:
+            if method == HTTP.DELETE_METHOD  and  len(path_elems) == 1:
                 try:
                     deleteResourceFromStorage(self.request.getRequestPath())
-                    return (200, "Resource deleted")
+                    return (HTTP.OK, "Resource deleted")
                 except GluException, e:
                     return (e.code, str(e))
 
@@ -117,8 +120,9 @@ class ResourceBrowser(BaseBrowser):
             code_uri              = rinfo['code_uri']
             component             = rinfo['component']
             services              = public_resource_def['services']
+            component.setBaseCapabilities(BaseCapabilities(component))
 
-            if method == "GET":
+            if method == HTTP.GET_METHOD:
                 self.breadcrums.append((resource_name, resource_home_uri))
 
             # Was there more to access?
@@ -147,14 +151,14 @@ class ResourceBrowser(BaseBrowser):
                     # normal error back to the user.
                     print traceback.format_exc()
                     log("Exception in component for service '%s': %s" % (service_name, str(e)), facility=LOGF_COMPONENTS)
-                    code, data = (500, "Internal server error. Details have been logged...")
+                    code, data = (HTTP.INTERNAL_SERVER_ERROR, "Internal server error. Details have been logged...")
 
-                if code != 404  and  method == "GET"  and  service_name in services:
+                if code != HTTP.NOT_FOUND  and  method == HTTP.GET_METHOD  and  service_name in services:
                     self.breadcrums.append((service_name, services[service_name]['uri']))
 
             else:
                 # No, nothing else. Someone just wanted to know more about the resource.
-                if method == "POST":
+                if method == HTTP.POST_METHOD:
                     raise GluMethodNotAllowedException()
                 data = public_resource_def
 

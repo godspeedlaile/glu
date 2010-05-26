@@ -13,7 +13,7 @@ package org.mulesource.glu.component.api;
 import java.lang.annotation.*; 
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 public @interface Parameter
 {    
     String  name();

@@ -8,6 +8,8 @@ import glu.settings as settings
 from glu.render import HtmlRenderer
 from glu.render import JsonRenderer
 
+from org.mulesource.glu.component.api import HTTP;
+
 class BaseBrowser(object):
     """
     A browser is a class that handles specific requests after they
@@ -103,6 +105,6 @@ class BaseBrowser(object):
         @rtype:   tuple
         
         """
-        return ( 200, "Base Browser" )
+        return ( HTTP.OK, "Base Browser" )
 
                 

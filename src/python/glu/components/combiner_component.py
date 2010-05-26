@@ -65,7 +65,7 @@ class CombinerComponent(BaseComponent):
         # Example of (3): Using an already existing resource definition.
         #
         code, data = accessResource("/resource/MyGoogleSearch/search", params = { "query" : "mule+esb" })
-        if code == 200:
+        if code == HTTP.OK:
             data = "Received the following data: " + str(data)
         else:
             data = "Looks like there was a problem: " + str(data)

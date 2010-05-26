@@ -102,20 +102,11 @@ def __javaServiceMethodProxy(component, method, method_name, input, params, http
     # service method.
     for name in component.componentDescriptor.getParamMap().keySet():
         if name in params:
-            '''
-            if hasattr(component, name):
-                raise GluException("Name '%s' cannot be assigned to component, because an attribute with that name exists already" % name)
-            '''
-            print "@@@@@ setting new attribute in component: ", name, params[name], component
             setattr(component, name, params[name])
             del params[name]
     try:
-        for key, val in params.items():
-            print "Key '%s' = %s, type: %s" % (key, str(val), type(val))
         param_order = component.getParameterOrder()[method_name]
         param_types = component.getParameterTypes()[method_name]
-        print "param order: ", param_order
-        print "param types: ", param_types
         # Assemble the list of additional service method parameters. We need
         # to perform a case, so we combine the type list and parameter name list,
         # index the parameter map and perform the cast all in one swoop.
@@ -127,8 +118,6 @@ def __javaServiceMethodProxy(component, method, method_name, input, params, http
                 param_value = params[name]
                 if param_type != type(param_value):
                     # Some type conversion is required
-                    print "@@@@ PARAM_TYPE:  ", param_type
-                    print "@@@@ PARAM_VALUE: ", param_value, type(param_value)
                     arglist.append(param_type(param_value))
                 else:
                     # Type is already in the right argument (often the case when a default
@@ -137,8 +126,10 @@ def __javaServiceMethodProxy(component, method, method_name, input, params, http
         else:
             arglist = list()
         res = method(String(http_method.upper()), String(input), *arglist)
-    except java.lang.Exception, e:        
-        raise GluException(str(e))   # Re-raises a native exception as GluException, leading to 500 message
+    except GluException, e:
+        raise e
+    except java.lang.Exception, e:
+        raise GluException(str(e))
     code = res.getCode()
     data = res.getObject()
     if type(data) in [ HashMap, Vector ]:

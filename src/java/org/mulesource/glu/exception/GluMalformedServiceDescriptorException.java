@@ -10,6 +10,8 @@
 
 package org.mulesource.glu.exception;
 
+import org.mulesource.glu.component.api.HTTP;
+
 public class GluMalformedServiceDescriptorException extends GluException
 {
     public GluMalformedServiceDescriptorException()
@@ -19,7 +21,7 @@ public class GluMalformedServiceDescriptorException extends GluException
     
     public GluMalformedServiceDescriptorException(String message)
     {
-        super(500, message);
+        super(HTTP.INTERNAL_SERVER_ERROR, message);
     }
 }
 

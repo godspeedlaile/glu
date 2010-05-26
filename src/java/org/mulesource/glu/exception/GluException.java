@@ -10,6 +10,8 @@
 
 package org.mulesource.glu.exception;
 
+import org.mulesource.glu.component.api.HTTP;
+
 public class GluException extends Exception
 {
     public int    code;
@@ -17,7 +19,7 @@ public class GluException extends Exception
     
     public GluException(String message)
     {
-        this(500, message);
+        this(HTTP.INTERNAL_SERVER_ERROR, message);
     }
     
     public GluException(int code, String message)

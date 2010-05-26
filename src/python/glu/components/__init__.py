@@ -16,16 +16,18 @@ from glu.components.gsearch_component      import GsearchComponent
 from glu.components.combiner_component     import CombinerComponent
 from glu.components.gpswalker_component    import GpsWalkerComponent
 from glu.components.storage_component      import StorageComponent
+
 #from glu.components.salesforce_component   import SalesforceComponent
 #from glu.components.marakana_component     import MarakanaComponent
 
 from org.mulesource.glu.component import TestComponent
+from org.mulesource.glu.component import JavaTwitterComponent
 
 #
 # The known components
 #
 _KNOWN_COMPONENTS = [ TwitterComponent, GsearchComponent, CombinerComponent, GpsWalkerComponent, StorageComponent,
-                      TestComponent ]
+                      TestComponent, JavaTwitterComponent ]
 # SalesforceComponent, MarakanaComponent ]
 
 # -------------------------------------------------------------------------------------

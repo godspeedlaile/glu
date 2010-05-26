@@ -50,15 +50,6 @@ class GsearchComponent(BaseComponent):
         @rtype:            string
         
         """
-        # Get my parameters
-        print "@@@@ in component: ", self
-        print "@@@@@@@@ Parameter query: ", query, type(query)
-        print "@@@@@@@@ Parameter num:   ", num, type(num)
-        print "@@@@@@@@ RCP api_key:     ", self.api_key, type(self.api_key)
-
-        request = self.getRequest()
-        print request.getRequestHeaders()
-        print type(request.getRequestHeaders())
         # This is the official API, which seems to require the API key
         #code, data = self.httpGet("http://base.google.com/base/feeds/snippets?q=%s&key=%s" % (query, key))
         #
@@ -71,12 +62,12 @@ class GsearchComponent(BaseComponent):
         while len(results) < num:
             url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&start=%d" % (query, start)
             code, data_str = self.httpGet(url)
-            if code == 200:
+            if code == HTTP.OK:
                 try:
                     data      = json.loads(data_str)
                     new_batch = data['responseData']['results']
                     results  += new_batch
                 except Exception, e:
-                    return 400, "Result data was malformed: " + str(e)
+                    return HTTP.BAD_REQUEST, "Result data was malformed: " + str(e)
         return code, results[:num]
 

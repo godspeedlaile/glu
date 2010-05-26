@@ -10,6 +10,8 @@
 
 package org.mulesource.glu.exception;
 
+import org.mulesource.glu.component.api.HTTP;
+
 public class GluFileNotFoundException extends GluException
 {
     public GluFileNotFoundException()
@@ -19,7 +21,7 @@ public class GluFileNotFoundException extends GluException
     
     public GluFileNotFoundException(String message)
     {
-        super(404, message);
+        super(HTTP.NOT_FOUND, message);
     }
 }
 

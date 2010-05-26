@@ -10,6 +10,8 @@
 
 package org.mulesource.glu.exception;
 
+import org.mulesource.glu.component.api.HTTP;
+
 public class GluMandatoryParameterMissingException extends GluException
 {
     public GluMandatoryParameterMissingException()
@@ -19,7 +21,7 @@ public class GluMandatoryParameterMissingException extends GluException
     
     public GluMandatoryParameterMissingException(String message)
     {
-        super(400, message);
+        super(HTTP.BAD_REQUEST, message);
     }
 }
 

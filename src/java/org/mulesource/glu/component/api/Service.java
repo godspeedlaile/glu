@@ -13,9 +13,9 @@ package org.mulesource.glu.component.api;
 import java.lang.annotation.*; 
 
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface Service
 {
     String   description();
-    String   doc();
 }
 

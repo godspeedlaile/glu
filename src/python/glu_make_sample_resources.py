@@ -79,6 +79,18 @@ send_test({
           code_url=SERVER_URL + "/code/TwitterComponent")
 
 
+send_test({
+            'params' : {
+                "account_password" : TWITTER_PASSWORD,
+                "account_name" :     TWITTER_ACCOUNT
+             },
+             "resource_creation_params" : {
+                "suggested_name" : "Java%sTwitter" % TWITTER_ACCOUNT
+             }
+          },
+          code_url=SERVER_URL + "/code/JavaTwitterComponent")
+
+
 # Create the Gsearch component
 send_test({
             'params' : {

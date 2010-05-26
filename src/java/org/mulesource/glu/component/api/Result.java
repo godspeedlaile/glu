@@ -14,7 +14,7 @@ public class Result
 {
     private int    code;
     private Object obj;
-    
+        
     public Result(int code, Object obj)
     {
         this.code = code;

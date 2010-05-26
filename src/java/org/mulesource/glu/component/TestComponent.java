@@ -14,10 +14,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 
-import org.mulesource.glu.parameter.*;
 import org.mulesource.glu.component.api.*;
-import org.mulesource.glu.exception.GluException;
-import org.mulesource.glu.GluHttpRequest;
 
 
 @ComponentInfo(name        = "TestComponent",
@@ -25,19 +22,22 @@ import org.mulesource.glu.GluHttpRequest;
                doc         = "Here is a doc string")
 public class TestComponent extends BaseComponent
 {    
-    @ResourceParameter(name="api_key", desc="This is the API key")
-    @ResourceParameterDefault("foo foo foo")
+    @Parameter(name="api_key", desc="This is the API key")
+    @Default("foo foo foo")
     public String api_key;
     
-    @Service(description = "This is the foobar service",
-             doc         = "Here is the docstring for this service method.")
+    @Service(description = "This is the foobar service")
     public Result foobar(String method, String input,
                          @Parameter(name="query",
                                     desc="This is the query string",
-                                    positional=true)                    String     query,
+                                    positional=true)
+                         @Default("foo")
+                                                                         String     query,
                          @Parameter(name="num",
-                                    desc="The number of results")
-                                    @Default("10")                      BigDecimal num)
+                                    desc="The number of results",
+                                    positional=true)
+                         @Default("10")
+                                                                         BigDecimal num)
     {
         System.out.println("----------------------------------------------------------");
         System.out.println("### input:   " + input.getClass() + " === " + input);
@@ -62,14 +62,13 @@ public class TestComponent extends BaseComponent
         v.add(123);
         v.add(res);
         
-        return new Result(200, v);
+        return new Result(HTTP.OK, v);
     }
  
-    @Service(description = "This is the blahblah service",
-             doc         = "Here is the docstring for this service method.")
+    @Service(description = "This is the blahblah service")
     public Result blahblah(String method, String input)
     {
-        return new Result(200, "This is a test");
+        return new Result(HTTP.OK, 112233);
     }
 }
 

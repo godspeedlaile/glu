@@ -10,6 +10,8 @@
 
 package org.mulesource.glu.exception;
 
+import org.mulesource.glu.component.api.HTTP;
+
 public class GluMethodNotAllowedException extends GluException
 {
     public GluMethodNotAllowedException()
@@ -19,7 +21,7 @@ public class GluMethodNotAllowedException extends GluException
     
     public GluMethodNotAllowedException(String message)
     {
-        super(400, message);
+        super(HTTP.METHOD_NOT_ALLOWED, message);
     }
 }
 

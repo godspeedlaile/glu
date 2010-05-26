@@ -10,13 +10,12 @@
 
 package org.mulesource.glu.component.api;
 
-import java.lang.annotation.*; 
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ResourceParameter
+public interface FileStore
 {
-    String  name();
-    String  desc();
+    public String   loadFile(String fileName);
+    public void     storeFile(String fileName, String data);
+    public void     deleteFile(String fileName);
+    public String[] listFiles();
 }
+
 

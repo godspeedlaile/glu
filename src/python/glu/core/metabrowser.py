@@ -6,7 +6,8 @@ import glu.settings as settings
 
 from glu.core.basebrowser import BaseBrowser
 
-from org.mulesource.glu.util import Url
+from org.mulesource.glu.util          import Url
+from org.mulesource.glu.component.api import HTTP;
 
         
 class MetaBrowser(BaseBrowser):
@@ -57,7 +58,7 @@ class MetaBrowser(BaseBrowser):
                     "version"  : "(prototype)",
                     "doc"      : Url(settings.PREFIX_META + "/doc")
             }
-            code = 200
+            code = HTTP.OK
             
         elif path == settings.PREFIX_META + "/doc":
             self.breadcrums.append(("Doc", settings.PREFIX_META + "/doc"))
@@ -66,9 +67,9 @@ This is the documentation for the server.
 
 Click around and have fun.
 """
-            code = 200
+            code = HTTP.OK
         else:
             data = "Don't know this meta page"
-            code = 404
+            code = HTTP.NOT_FOUND
         
         return ( code, data )

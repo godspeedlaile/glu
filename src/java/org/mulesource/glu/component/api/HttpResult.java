@@ -10,12 +10,10 @@
 
 package org.mulesource.glu.component.api;
 
-import java.lang.annotation.*; 
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ResourceParameterDefault
+public class HttpResult
 {
-    String  value();
+    public int    status;
+    public String data;
 }
+
 

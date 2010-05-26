@@ -75,10 +75,12 @@ class BaseComponent(object):
     """A dictionary keying method name to docstring for exposed sub-service methods. May be left empty."""
     
     def __init__(self):
-        self.__accountname   = None
-        self.__password      = None
-        self.__resource_name = None
-        self.__http_request  = None
+        self.__resource_name     = None
+        self.__http_request      = None
+        self.__base_capabilities = None
+        
+    def setBaseCapabilities(self, base_capabilities):
+        self.__base_capabilities = base_capabilities
 
     def setResourceName(self, resource_name):
         self.__resource_name = resource_name
@@ -112,37 +114,8 @@ class BaseComponent(object):
         @return:            FileStorage object.
 
         """
-        my_resource_name = self.getMyResourceName()
-        if my_resource_name:
-            if namespace:
-                unique_namespace = "%s__%s" % (self.getMyResourceName(), namespace)
-            else:
-                unique_namespace = self.getMyResourceName()
-            storage = FileStorage(storage_location="storageDB", unique_prefix=unique_namespace)
-            return storage
-        else:
-            # Cannot get storage object when I am not running as a resource
-            return None
+        return self.__base_capabilities.getFileStorage(namespace)
     
-    def __get_http_opener(self, url):
-        """
-        Return an HTTP handler class, with credentials enabled if specified.
-        
-        @param url:    URL that needs to be fetched.
-        @type url:     string
-        
-        @return:       HTTP opener (from urllib2)
-        
-        """
-        if self.__accountname  and  self.__password:
-            passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
-            passman.add_password(None, url, self.__accountname, self.__password)
-            authhandler = urllib2.HTTPBasicAuthHandler(passman)
-            opener = urllib2.build_opener(authhandler)
-        else:
-            opener = urllib2.build_opener()
-        return opener
-        
     def httpSetCredentials(self, accountname, password):
         """
         The component author can set credentials for sites that require authentication.
@@ -154,29 +127,8 @@ class BaseComponent(object):
         @type password:        string
         
         """
-        self.__accountname = accountname
-        self.__password    = password
+        return self.__base_capabilities.httpSetCredentials(accountname, password)
     
-    def __http_access(self, url, data=None):
-        """
-        Access an HTTP resource with GET or POST.
-        
-        @param url:    The URL to access.
-        @type url:     string
-        
-        @param data:   If present specifies the data for a POST request.
-        @type data:    Data to be sent or None.
-        
-        @return:       Code and response data tuple.
-        @rtype:        tuple
-        
-        """
-        opener = self.__get_http_opener(url)
-        resp = opener.open(url, data)
-        code = 200
-        data = resp.read()
-        return code, data
-        
     def httpGet(self, url):
         """
         Accesses the specified URL.
@@ -191,8 +143,8 @@ class BaseComponent(object):
         @rtype:            tuple
         
         """
-        return self.__http_access(url)
-
+        res = self.__base_capabilities.httpGet(url)
+        return (res.status, res.data)
 
     def httpPost(self, url, data):
         """
@@ -211,8 +163,8 @@ class BaseComponent(object):
         @rtype:            tuple
         
         """
-        return self.__http_access(url, data)
-
+        res = self.__base_capabilities.httpPost(url, data)
+        return (res.status, res.data)
 
     def getMetaData(self):
         """

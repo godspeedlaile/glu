@@ -10,6 +10,8 @@
 
 package org.mulesource.glu.exception;
 
+import org.mulesource.glu.component.api.HTTP;
+
 public class GluPermissionDeniedException extends GluException
 {
     public GluPermissionDeniedException()
@@ -19,7 +21,7 @@ public class GluPermissionDeniedException extends GluException
     
     public GluPermissionDeniedException(String message)
     {
-        super(403, message);
+        super(HTTP.FORBIDDEN, message);
     }
 }
 
