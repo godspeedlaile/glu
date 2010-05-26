@@ -49,7 +49,6 @@ class JythonJavaHttpRequest(GluHttpRequest):
     _native_mode = False
     
     def setNativeMode(self):
-        print "@#@#@#@#@#@  Setting native mode"
         self._native_mode = True
 
     def setNativeRequest(self, native_req):

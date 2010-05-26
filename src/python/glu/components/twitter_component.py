@@ -88,7 +88,7 @@ class TwitterComponent(BaseComponent):
         
         """
         # Get my parameters
-        if not input:
+        if method == HTTP.GET:
             return HTTP.OK, self.__get_status(self.account_name)
         else:
             return HTTP.OK, self.__post_status(self.account_name, self.account_password, input)

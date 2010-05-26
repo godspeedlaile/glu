@@ -18,6 +18,7 @@ conversion function whenever we use the components.
 from glu.platform_specifics import PLATFORM, PLATFORM_JYTHON
 
 from org.mulesource.glu.exception import *
+from org.mulesource.glu.component.api import HTTP, HttpMethod
 
 if PLATFORM == PLATFORM_JYTHON:
     import java.lang.Exception
@@ -125,7 +126,7 @@ def __javaServiceMethodProxy(component, method, method_name, input, params, http
                     arglist.append(param_value)
         else:
             arglist = list()
-        res = method(String(http_method.upper()), String(input), *arglist)
+        res = method(http_method, String(input), *arglist)
     except GluException, e:
         raise e
     except java.lang.Exception, e:
@@ -151,17 +152,29 @@ def __pythonServiceMethodProxy(component, method, method_name, input, params, ht
                 raise GluException("Name '%s' cannot be assigned to component, because an attribute with that name exists already" % name)
             setattr(component, name, params[name])
             del params[name]
-    return method(http_method.upper(), input, **params)
+    return method(http_method, input, **params)
 
 #
 # Translation table, which finds the correct conversion function
 # based on the language ID of the component.
 #
 __LANG_METHOD_PROXIES = {
-   "JAVA"   : __javaServiceMethodProxy,
-   "PYTHON" : __pythonServiceMethodProxy,
+    "JAVA"   : __javaServiceMethodProxy,
+    "PYTHON" : __pythonServiceMethodProxy,
 }
 
+#
+# Translates the string representation of the HTTP method to
+# the HttpMethod enum type.
+#
+__HTTP_METHOD_LOOKUP = {
+    HTTP.GET_METHOD     : HttpMethod.GET,
+    HTTP.POST_METHOD    : HttpMethod.POST,
+    HTTP.PUT_METHOD     : HttpMethod.PUT,
+    HTTP.DELETE_METHOD  : HttpMethod.DELETE,
+    HTTP.HEAD_METHOD    : HttpMethod.HEAD,
+    HTTP.OPTIONS_METHOD : HttpMethod.OPTIONS,    
+}
 
 def serviceMethodProxy(component, service_method, service_method_name, request, input, params, http_method):
     """
@@ -179,4 +192,6 @@ def serviceMethodProxy(component, service_method, service_method_name, request, 
     """
     func = __LANG_METHOD_PROXIES[component.LANGUAGE]
     component.setRequest(request)
-    return func(component, service_method, service_method_name, input, params, http_method)
+    
+    return func(component, service_method, service_method_name, input, params,
+                __HTTP_METHOD_LOOKUP.get(http_method.upper(), HttpMethod.UNKNOWN))

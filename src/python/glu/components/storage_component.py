@@ -66,7 +66,7 @@ class StorageComponent(BaseComponent):
             new_data = [ "%s/%s/%s" % (my_resource_uri, "files", dname) for dname in data ]
             data = new_data
         else:
-            if method == HTTP.DELETE_METHOD:
+            if method == HTTP.DELETE:
                 storage.deleteFile(name)
                 data = "File deleted"
             else:

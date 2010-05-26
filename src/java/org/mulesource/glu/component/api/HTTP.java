@@ -12,12 +12,19 @@ package org.mulesource.glu.component.api;
 
 public class HTTP
 {
-    public static final String GET_METHOD        = "GET";
-    public static final String POST_METHOD       = "POST";
-    public static final String PUT_METHOD        = "PUT";
-    public static final String DELETE_METHOD     = "DELETE";
-    public static final String HEAD_METHOD       = "HEAD";
-    public static final String OPTIONS_METHOD    = "OPTIONS";
+    public static final HttpMethod GET               = HttpMethod.GET;
+    public static final HttpMethod POST              = HttpMethod.POST;
+    public static final HttpMethod PUT               = HttpMethod.PUT;
+    public static final HttpMethod DELETE            = HttpMethod.DELETE;
+    public static final HttpMethod HEAD              = HttpMethod.HEAD;
+    public static final HttpMethod OPTIONS           = HttpMethod.OPTIONS;
+
+    public static final String     GET_METHOD        = "GET";
+    public static final String     POST_METHOD       = "POST";
+    public static final String     PUT_METHOD        = "PUT";
+    public static final String     DELETE_METHOD     = "DELETE";
+    public static final String     HEAD_METHOD       = "HEAD";
+    public static final String     OPTIONS_METHOD    = "OPTIONS";
 
     public static final int CONTINUE                          = 100;
     public static final int SWITCHING_PROTOCOLS               = 101;

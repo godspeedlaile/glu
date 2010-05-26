@@ -226,7 +226,7 @@ class MarakanaComponent(BaseComponent):
             # which means we should generate a list of all the orders we have stored.
             data = self.__get_order_list(storage)
         else:
-            if method == HTTP.DELETE_METHOD:
+            if method == HTTP.DELETE:
                 if param_order_id:
                     storage.deleteFile(param_order_id)
                     data = "File deleted"

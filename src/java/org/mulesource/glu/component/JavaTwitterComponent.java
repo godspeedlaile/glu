@@ -48,20 +48,19 @@ public class JavaTwitterComponent extends BaseComponent
     }
     
     @Service(description = "You can GET the status or POST a new status to it.")
-    public Result status(String method, String input)
+    public Result status(HttpMethod method, String input)
     {
         int    status = HTTP.OK;
         String data;
-        /*
-        if (method.equals(HTTP.GET_METHOD)) {
+        if (method == HTTP.GET) {
             data = getStatus();
         }
         else {
             data = postStatus(input);
         }
-        */
         data = "Blah: " + input;
         return new Result(status, data);
+        
     }
 }
 

@@ -27,7 +27,7 @@ public class TestComponent extends BaseComponent
     public String api_key;
     
     @Service(description = "This is the foobar service")
-    public Result foobar(String method, String input,
+    public Result foobar(HttpMethod method, String input,
                          @Parameter(name="query",
                                     desc="This is the query string",
                                     positional=true)
@@ -66,7 +66,7 @@ public class TestComponent extends BaseComponent
     }
  
     @Service(description = "This is the blahblah service")
-    public Result blahblah(String method, String input)
+    public Result blahblah(HttpMethod method, String input)
     {
         return new Result(HTTP.OK, 112233);
     }
