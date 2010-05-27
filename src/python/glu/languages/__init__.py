@@ -106,16 +106,15 @@ def languageStructToPython(component, obj):
 #
 # Proxies for calling language specific component service methods
 #
-def __javaServiceMethodProxy(component, method, method_name, input, params, http_method):
+def __javaServiceMethodProxy(component, request, method, method_name, input, params, http_method):
     """
     Calls service methods in Java components.
     
     Prepares parameters, converts exceptions and results.
     
     """
-    req = component.getRequest()
-    if req:
-        req.setNativeMode()
+    if request:
+        request.setNativeMode()
     # We remove the resource creation time parameters from the map and
     # assign them directly to the component as new attributes. After that,
     # the pruned parameter map can be passed as keyword arg dict to the
@@ -165,7 +164,7 @@ def __javaServiceMethodProxy(component, method, method_name, input, params, http
         res.setEntity(data)
     return res
 
-def __pythonServiceMethodProxy(component, method, method_name, input, params, http_method):
+def __pythonServiceMethodProxy(component, request, method, method_name, input, params, http_method):
     """
     Calls service methods in Python components.
     
@@ -208,5 +207,4 @@ def serviceMethodProxy(component, service_method, service_method_name, request, 
     """
     func = __LANG_METHOD_PROXIES[component.LANGUAGE]
     component.setRequest(request)
-    
-    return func(component, service_method, service_method_name, input, params, http_method)
+    return func(component, request, service_method, service_method_name, input, params, http_method)

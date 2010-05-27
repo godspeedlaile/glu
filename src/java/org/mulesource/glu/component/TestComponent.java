@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import org.mulesource.glu.component.api.*;
+import org.mulesource.glu.exception.GluException;
 
 
 @ComponentInfo(name        = "TestComponent",

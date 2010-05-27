@@ -88,8 +88,11 @@ class BaseComponent(object):
     def setRequest(self, request):
         self.__http_request = request
         
-    def getRequest(self):
-        return self.__http_request
+    def getRequestUri(self):
+        return self.__http_request.getRequestURI()
+
+    def getRequestHeaders(self):
+        return self.__http_request.getRequestHeaders()
     
     def getMyResourceName(self):
         return self.__resource_name
@@ -177,10 +180,10 @@ class BaseComponent(object):
         @rtype:  dict
         
         """
-        d = dict(uri    = Url(self.getUri()),
+        d = dict(uri    = Url(self.getCodeUri()),
                  name   = self.getName(),
                  desc   = self.getDesc(),
-                 doc    = Url(self.getUri() + "/doc"),
+                 doc    = Url(self.getCodeUri() + "/doc"),
                  params = _change_params_to_plain_dict(self.getParams()),
                  services = self._getServices()
                 )
@@ -232,7 +235,7 @@ class BaseComponent(object):
         """
         return self.DOCUMENTATION
 
-    def getUri(self):
+    def getCodeUri(self):
         """
         Return the URI for this component.
         
@@ -283,7 +286,7 @@ class BaseComponent(object):
         else:
             # No base URI specified? Then we can get the service URIs relative to
             # the code's URI.
-            base_uri = self.getUri()
+            base_uri = self.getCodeUri()
         if self.SERVICES:
             ret = dict()
             for name in self.SERVICES.keys():

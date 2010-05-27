@@ -327,7 +327,7 @@ def makeResource(component_class, params):
     suggested_name = provided_resource_creation_params['suggested_name']
     resource_uri   = settings.PREFIX_RESOURCE + "/" + suggested_name
     resource_name  = suggested_name # TODO: Should check if the resource exists already...
-    params['code_uri'] = component.getUri()  # Need a reference to the code that this applies to
+    params['code_uri'] = component.getCodeUri()  # Need a reference to the code that this applies to
     
     # Some parameters are optional. If they were not supplied,
     # we need to add their default values.

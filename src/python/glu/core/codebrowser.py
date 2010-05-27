@@ -97,7 +97,7 @@ class CodeBrowser(BaseBrowser):
             #
             # Just show the home page of the code browser (list of all installed code)
             #
-            data = dict([ (name, { "uri" : Url(class_name().getUri()), "desc" : class_name().getDesc() } ) \
+            data = dict([ (name, { "uri" : Url(class_name().getCodeUri()), "desc" : class_name().getDesc() } ) \
                                 for (name, class_name) in _CODE_MAP.items() ])
         else:
             # Path elements (the known code prefix is stripped off)
@@ -109,7 +109,7 @@ class CodeBrowser(BaseBrowser):
             if not component_class:
                 return Result.notFound("Unknown component")
             component          = component_class()
-            component_home_uri = component.getUri()
+            component_home_uri = component.getCodeUri()
             self.breadcrums.append((component_name, component_home_uri))
 
             if len(path_elems) == 1:

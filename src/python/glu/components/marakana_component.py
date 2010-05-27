@@ -261,9 +261,7 @@ class MarakanaComponent(BaseComponent):
                         result = Result.ok("Successfully updated: %s" % location_str)
                     else:
                         # Creating a new order? We need to extract the order id.
-                        if self.getRequest():
-                            self.getRequest().setResponseHeader("Location", location_str)
-                        result = Result.created("Successfully stored: %s" % location_str)
+                        result = Result.created(location_str, "Successfully stored: %s" % location_str)
 
                     # Store the data, but only the dictionary that contains the actual order info.
                     # We store it in a dictionary that contains a single key and this data, since

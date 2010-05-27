@@ -67,6 +67,7 @@ class CombinerComponent(BaseComponent):
         #code, data = accessResource("/resource/MyGoogleSearch/search", params = { "query" : "mule+esb" })
         code, data = accessResource("/resource/MyJavaTestComponent/foobar",
                                     params = { "query" : "mule+esb", "num" : 1123 })
+        
         if code == HTTP.OK:
             result = Result.ok(data)
         else:

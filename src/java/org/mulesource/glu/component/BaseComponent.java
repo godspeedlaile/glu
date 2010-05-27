@@ -10,6 +10,8 @@
 
 package org.mulesource.glu.component;
 
+import com.sun.net.httpserver.Headers;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.lang.annotation.Annotation;
@@ -76,11 +78,15 @@ public abstract class BaseComponent
         this.httpRequest = request;
     }
     
-    public GluHttpRequest getRequest()
+    public String getRequestUri()
     {
-        return httpRequest;
+        return httpRequest.getRequestURI();
     }
     
+    public Headers getRequestHeaders()
+    {
+        return httpRequest.getRequestHeaders();
+    }
     
     public HttpResult accessResource(String uri)
     {
@@ -284,7 +290,7 @@ public abstract class BaseComponent
 
         HashMap<String, Object> d = new HashMap<String, Object>();
         
-        d.put("uri",      getUri());
+        d.put("uri",      getCodeUri());
         d.put("name",     getName());
         d.put("desc",     getDesc());
         d.put("doc",      getDoc());
@@ -319,9 +325,16 @@ public abstract class BaseComponent
         return getComponentDescriptor().getDocs();
     }
     
-    public String getUri() throws GluException
+    public String getCodeUri()
     {
-        return Settings.PREFIX_CODE + "/" + getName();
+        String name;
+        try {
+            name = getName();
+        }
+        catch (Exception e) {
+            name = "";
+        }
+        return Settings.PREFIX_CODE + "/" + name;
     }
     
     /*
@@ -342,7 +355,7 @@ public abstract class BaseComponent
         // then we use the code base URI instead.
         String baseUri;        
         if (resourceBaseUri == null) {
-            baseUri = getUri();
+            baseUri = getCodeUri();
         }
         else {
             baseUri = resourceBaseUri;
