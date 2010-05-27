@@ -417,7 +417,7 @@ class SalesforceComponent(BaseComponent):
         else:
             raise GluBadRequestException("Unknown query spec: " + spec)
 
-        return HTTP.OK, data
+        return Result.ok(data)
  
 
     def contact(self, request, input, params, method):
@@ -442,7 +442,7 @@ class SalesforceComponent(BaseComponent):
         """
         code, data = self.__salesforce_table(request, input, params, "contact",
                                              self.__contact_fields_compact, self.__contact_fields_normal) 
-        return code, data
+        return Result(code, data)
 
     def lead(self, request, input, params, method):
         """
@@ -466,7 +466,7 @@ class SalesforceComponent(BaseComponent):
         """
         code, data = self.__salesforce_table(request, input, params, "lead",
                                              self.__lead_fields_compact, self.__lead_fields_normal) 
-        return code, data
+        return Result(code, data)
 
     def opportunity(self, request, input, params, method):
         """
@@ -490,6 +490,6 @@ class SalesforceComponent(BaseComponent):
         """
         code, data = self.__salesforce_table(request, input, params, "opportunity",
                                              self.__opportunity_fields_compact, self.__opportunity_fields_normal) 
-        return code, data
+        return Result(code, data)
 
 

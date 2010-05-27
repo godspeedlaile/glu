@@ -60,7 +60,7 @@ public class TestComponent extends BaseComponent
         v.add(123);
         v.add(res);
         
-        return new Result(HTTP.OK, v);
+        return Result.ok(v);
     }
  
     @Service(description = "This accesses a Python Google search resource and returns the result")
@@ -70,7 +70,7 @@ public class TestComponent extends BaseComponent
         HashMap params = new HashMap();
         params.put("query", "foo");
         res = accessResource("/resource/MyGoogleSearch/search", null, params);
-        return new Result(HTTP.OK, res.data);
+        return new Result(res.status, res.data);
     }
 }
 

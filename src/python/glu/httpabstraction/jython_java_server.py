@@ -14,9 +14,9 @@ from java.lang              import String
 from java.io                import InputStreamReader;
 from java.io                import BufferedReader
 from java.io                import DataOutputStream
+from java.lang              import Exception as JavaException
 
 # Python imports
-import sys
 import traceback
 
 # Glu imports
@@ -91,7 +91,7 @@ class JythonJavaHttpRequest(GluHttpRequest):
         @type body:     string
         
         """
-        self.__response_body = String(body)
+        self.__response_body = String(body if body else "")
         
     def setResponseHeader(self, name, value):
         """
@@ -255,7 +255,7 @@ class JythonJavaHttpRequest(GluHttpRequest):
         """
         if self.__native_req:
             os = DataOutputStream(self.__native_req.getResponseBody())
-            os.writeBytes(self.__response_body)
+            num = os.writeBytes(self.__response_body)
             os.flush()
             os.close()
         
@@ -330,20 +330,24 @@ class __HttpHandler(HttpHandler):
                                     req.getRequestMethod(),
                                     req.getRequestURI())
             #log(msg, facility=LOGF_ACCESS_LOG)
-            code, response_body, headers = self.request_handler.handle(req)
-            for name, value in headers.items():
-                req.setResponseHeader(name, value)
-            req.setResponse(code, response_body)
+            result = self.request_handler.handle(req)
+            headers = result.getHeaders()
+            if headers:
+                for name in headers.keySet():
+                    req.setResponseHeader(name, headers[name])
+            req.setResponse(result.getStatus(), result.getEntity())
             req.sendResponse()
             native_request.close()
             end_time   = datetime.datetime.now()
             td         = end_time-start_time
             request_ms = td.seconds*1000 + td.microseconds//1000
-            log("%s : %sms : %s : %s" % (msg, request_ms, code, len(response_body)),
+            log("%s : %sms : %s : %s" % (msg, request_ms, result.getStatus(), len(str(result.getEntity()))),
                                          start_time = start_time, facility=LOGF_ACCESS_LOG)
         except Exception, e:
             print traceback.format_exc()
             sys.exit(1)
+        except JavaException, e:
+            print "JAVA exception: ", e.printStackTrace()
 
 
 class JythonJavaHttpServer(BaseHttpServer):

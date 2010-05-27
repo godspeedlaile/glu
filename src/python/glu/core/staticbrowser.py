@@ -6,7 +6,7 @@ import glu.settings as settings
 
 from glu.core.basebrowser import BaseBrowser
 
-from org.mulesource.glu.component.api import HTTP;
+from org.mulesource.glu.component.api import HTTP, Result
 
         
 class StaticBrowser(BaseBrowser):
@@ -55,7 +55,7 @@ class StaticBrowser(BaseBrowser):
             f = open(settings.STATIC_LOCATION + path, "r")
             data = f.read()
             f.close()
-            return HTTP.OK, data
+            return Result.ok(data)
         except Exception, e:
-            return HTTP.NOT_FOUND, "Not found"
+            return Result.notFound("Not found")
             

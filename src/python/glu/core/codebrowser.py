@@ -9,6 +9,8 @@ import glujson as json
 import glu.settings as settings
 
 from org.mulesource.glu.exception       import GluException
+from org.mulesource.glu.component.api   import Result
+
 from glu.components       import _CODE_MAP
 from glu.resources        import makeResource 
 from glu.core.basebrowser import BaseBrowser
@@ -84,8 +86,8 @@ class CodeBrowser(BaseBrowser):
         When someone sends GET requests to the code then
         they want to browse the available code options.
         
-        @return:  HTTP return code and data as a tuple.
-        @rtype:   tuple
+        @return:  HTTP return structure.
+        @rtype:   Result
 
         """
         # It's the responsibility of the browser class to provide breadcrums
@@ -105,7 +107,7 @@ class CodeBrowser(BaseBrowser):
             # Instantiate the component
             component_class = getComponentClass(self.request.getRequestPath())
             if not component_class:
-                return (HTTP.NOT_FOUND, "Unknown component")
+                return Result.notFound("Unknown component")
             component          = component_class()
             component_home_uri = component.getUri()
             self.breadcrums.append((component_name, component_home_uri))
@@ -125,9 +127,9 @@ class CodeBrowser(BaseBrowser):
                     data       = component.getDocs()
                     self.breadcrums.append(("Doc", component_home_uri + "/doc"))
                 else:
-                    return (HTTP.NOT_FOUND, "Unknown code detail")
+                    return Result.notFound("Unknown code detail")
                 
-        return ( HTTP.OK, data )
+        return Result.ok(data)
     
     
     def __process_post(self):
@@ -137,8 +139,8 @@ class CodeBrowser(BaseBrowser):
         The only allowed POST requests to code are requests
         to the base URI of a component. This creates a new resource.
         
-        @return:  HTTP return code and data as a tuple.
-        @rtype:   tuple
+        @return:  HTTP return structure.
+        @rtype:   Result
 
         """
         #
@@ -146,7 +148,7 @@ class CodeBrowser(BaseBrowser):
         #
         component_class = getComponentClass(self.request.getRequestPath())
         if not component_class:
-            return (HTTP.NOT_FOUND, "Unknown component")
+            return Result.notFound("Unknown component")
         #component = component_class()
         body = self.request.getRequestBody()
         try:
@@ -154,19 +156,18 @@ class CodeBrowser(BaseBrowser):
         except Exception, e:
             raise GluException("Malformed request body: " + str(e))
         ret_msg = makeResource(component_class, param_dict)
-        return ( HTTP.CREATED, ret_msg )
+        return Result.created(ret_msg['uri'], ret_msg)
     
     def process(self):
         """
         Process the request.
         
-        @return:  HTTP return code and data as a tuple.
-        @rtype:   tuple
+        @return:  HTTP return structure.
+        @rtype:   Result
         
         """
         method = self.request.getRequestMethod()
         if method == HTTP.GET_METHOD:
-            (code, data) = self.__process_get()
+            return self.__process_get()
         elif method == HTTP.POST_METHOD:
-            (code, data) = self.__process_post()
-        return (code, data)
+            return self.__process_post()

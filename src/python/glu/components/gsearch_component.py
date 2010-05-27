@@ -72,8 +72,8 @@ class GsearchComponent(BaseComponent):
                     results  += new_batch
                 except Exception, e:
                     return HTTP.BAD_REQUEST, "Result data was malformed: " + str(e)
-        return code, results[:num]
+        return Result(code, results[:num])
 
 
     def sss(self, input, method):
-        return 200, { "some float" : 123.456, "some int" : 111, "some list" : [ 11, "22", 33.3 ] }
+        return Result.ok({ "some float" : 123.456, "some int" : 111, "some list" : [ 11, "22", 33.3 ] })

@@ -53,7 +53,7 @@ class StorageComponent(BaseComponent):
         
         """
         # Access to our storage bucket
-        storage   = self.getFileStorage()
+        storage = self.getFileStorage()
 
         if not name:
             # User didn't specify a specific file, which means we should generate
@@ -76,5 +76,5 @@ class StorageComponent(BaseComponent):
                 else:
                     data = storage.loadFile(name)
 
-        return HTTP.OK, data
+        return Result.ok(data)
 

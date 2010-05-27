@@ -18,7 +18,7 @@ conversion function whenever we use the components.
 from glu.platform_specifics           import PLATFORM, PLATFORM_JYTHON
 
 from org.mulesource.glu.exception     import *
-from org.mulesource.glu.component.api import HTTP, HttpMethod
+from org.mulesource.glu.component.api import HTTP, HttpMethod, Result
 
 if PLATFORM == PLATFORM_JYTHON:
     import java.lang.Exception
@@ -159,11 +159,11 @@ def __javaServiceMethodProxy(component, method, method_name, input, params, http
     except java.lang.Exception, e:
         print "Exception in component: ", e.printStackTrace()
         raise GluException(str(e))
-    code = res.getStatus()
     data = res.getEntity()
     if type(data) in [ HashMap, Vector ]:
         data = __javaStructToPython(data)
-    return code, data
+        res.setEntity(data)
+    return res
 
 def __pythonServiceMethodProxy(component, method, method_name, input, params, http_method):
     """

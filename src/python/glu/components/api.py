@@ -8,5 +8,5 @@ from glu.resources.resource_runner import accessResource
 
 from org.mulesource.glu.exception  import *
 
-from org.mulesource.glu.component.api import Result, HTTP, HttpMethod;
+from org.mulesource.glu.component.api import Result, HTTP, HttpMethod
 

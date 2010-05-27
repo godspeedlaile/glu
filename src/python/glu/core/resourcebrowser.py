@@ -10,7 +10,7 @@ import traceback
 import glu.settings as settings
 
 from org.mulesource.glu.exception     import *
-from org.mulesource.glu.component.api import HTTP, HttpMethod;
+from org.mulesource.glu.component.api import HTTP, HttpMethod, Result
 
 from glu.logger                       import *
 from glu.core.basebrowser             import BaseBrowser
@@ -79,8 +79,8 @@ class ResourceBrowser(BaseBrowser):
         """
         Process the request.
      
-        @return:  HTTP return code and data as a tuple.
-        @rtype:   tuple
+        @return:  HTTP result structure.
+        @rtype:   Result
         
         """
         method = self.request.getRequestMethod()
@@ -89,7 +89,6 @@ class ResourceBrowser(BaseBrowser):
             # It's the responsibility of the browser class to provide breadcrums
             self.breadcrums = [ ("Home", settings.DOCUMENT_ROOT), ("Resource", settings.PREFIX_RESOURCE) ]
 
-        code = HTTP.OK
         if self.request.getRequestPath() == settings.PREFIX_RESOURCE:
             #
             # Request to the base URL of all resources (listing resources)
@@ -98,7 +97,7 @@ class ResourceBrowser(BaseBrowser):
                 #
                 # List all the resources
                 #
-                data = listResources()
+                return Result.ok(listResources())
             else:
                 raise GluMethodNotAllowedException()
             
@@ -120,9 +119,9 @@ class ResourceBrowser(BaseBrowser):
             if method == HTTP.DELETE_METHOD  and  len(path_elems) == 1:
                 try:
                     deleteResourceFromStorage(self.request.getRequestPath())
-                    return (HTTP.OK, "Resource deleted")
+                    return Result.ok("Resource deleted")
                 except GluException, e:
-                    return (e.code, str(e))
+                    return Result(e.code, str(e))
 
             # Get the public representation of the resource
             rinfo = _getResourceDetails(resource_name)
@@ -152,28 +151,27 @@ class ResourceBrowser(BaseBrowser):
                 input             = self.request.getRequestBody()
                 try:
                     http_method = __HTTP_METHOD_LOOKUP.get(self.request.getRequestMethod().upper(), HttpMethod.UNKNOWN)
-                    code, data = _accessComponentService(component, services, complete_resource_def,
-                                                         resource_name, service_name, positional_params,
-                                                         runtime_param_dict, input, self.request,
-                                                         http_method)
+                    result      = _accessComponentService(component, services, complete_resource_def,
+                                                          resource_name, service_name, positional_params,
+                                                          runtime_param_dict, input, self.request,
+                                                          http_method)
                 except GluException, e:
-                    code = e.code
-                    data = e.msg
+                    result = Result(e.code, e.msg)
                 except Exception, e:
                     # The service code threw an exception. We need to log that and return a
                     # normal error back to the user.
                     print traceback.format_exc()
                     log("Exception in component for service '%s': %s" % (service_name, str(e)), facility=LOGF_COMPONENTS)
-                    code, data = (HTTP.INTERNAL_SERVER_ERROR, "Internal server error. Details have been logged...")
+                    result = Result.internalServerError("Internal server error. Details have been logged...")
 
-                if code != HTTP.NOT_FOUND  and  method == HTTP.GET_METHOD  and  service_name in services:
+                if result.getStatus() != HTTP.NOT_FOUND  and  method == HTTP.GET_METHOD  and  service_name in services:
                     self.breadcrums.append((service_name, services[service_name]['uri']))
+                    
+                return result
 
             else:
                 # No, nothing else. Someone just wanted to know more about the resource.
                 if method == HTTP.POST_METHOD:
                     raise GluMethodNotAllowedException()
-                data = public_resource_def
-
-        return (code, data)
-
+                return Result.ok(public_resource_def)
+        print "@=============================================="

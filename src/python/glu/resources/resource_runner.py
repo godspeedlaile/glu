@@ -8,7 +8,7 @@ import glu.core.codebrowser  # Wanted to be much more selective here, but a circ
                              # We only need getComponentInstance() from this module.
 
 from org.mulesource.glu.exception import *
-from org.mulesource.glu.component.api import HTTP
+from org.mulesource.glu.component.api import HTTP, Result
 from glu.resources  import paramSanityCheck, fillDefaults, convertTypes, \
                            retrieveResourceFromStorage, getResourceUri
 
@@ -64,6 +64,9 @@ def _accessComponentService(component, services, complete_resource_def, resource
                                   That allows the framework code to react differently to exceptions
                                   in here than direct-call code.
     @type direct_call:            boolean
+    
+    @return                       HTTP result structure
+    @rtype                        Result
     
     """
     try:
@@ -158,8 +161,9 @@ def _accessComponentService(component, services, complete_resource_def, resource
 
             component.setBaseCapabilities(BaseCapabilities(component))
 
-            code, data = serviceMethodProxy(component, service_method, service_name, request,
-                                            input, params, method)
+            result = serviceMethodProxy(component, service_method, service_name, request,
+                                        input, params, method)
+            return result
         else:
             raise GluException("Service '%s' is not exposed by this resource." % service_name)
     except GluException, e:
@@ -167,7 +171,6 @@ def _accessComponentService(component, services, complete_resource_def, resource
             raise Exception(e.msg)
         else:
             raise e
-    return code, data
 
 
 def _getResourceDetails(resource_name):
@@ -245,9 +248,9 @@ def accessResource(resource_uri, input=None, params=None, method=HTTP.GET):
     if params is None:
         params = dict()
     
-    code, data = _accessComponentService(rinfo['component'], rinfo['public_resource_def']['services'],
-                                         rinfo['complete_resource_def'], resource_name,
-                                         service_name, positional_params, params, input, None, method, True)
-    return code, data
+    result = _accessComponentService(rinfo['component'], rinfo['public_resource_def']['services'],
+                                     rinfo['complete_resource_def'], resource_name,
+                                     service_name, positional_params, params, input, None, method, True)
+    return result.getStatus(), result.getEntity()
  
  

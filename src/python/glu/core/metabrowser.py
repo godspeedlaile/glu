@@ -7,7 +7,7 @@ import glu.settings as settings
 from glu.core.basebrowser import BaseBrowser
 
 from org.mulesource.glu.util          import Url
-from org.mulesource.glu.component.api import HTTP;
+from org.mulesource.glu.component.api import HTTP, Result
 
         
 class MetaBrowser(BaseBrowser):
@@ -42,8 +42,8 @@ class MetaBrowser(BaseBrowser):
         handled by this browser. Currently, there is only one request
         handled by the meta browser.
         
-        @return:  Http return code and data as a tuple.
-        @rtype:   tuple
+        @return:  Http return structure.
+        @rtype:   Result
         
         """
         self.breadcrums = [ ("Home","/") ]
@@ -58,7 +58,7 @@ class MetaBrowser(BaseBrowser):
                     "version"  : "(prototype)",
                     "doc"      : Url(settings.PREFIX_META + "/doc")
             }
-            code = HTTP.OK
+            result = Result.ok(data)
             
         elif path == settings.PREFIX_META + "/doc":
             self.breadcrums.append(("Doc", settings.PREFIX_META + "/doc"))
@@ -67,9 +67,8 @@ This is the documentation for the server.
 
 Click around and have fun.
 """
-            code = HTTP.OK
+            result = Result.ok(data)
         else:
-            data = "Don't know this meta page"
-            code = HTTP.NOT_FOUND
+            result = Result.notFound("Don't know this meta page")
         
-        return ( code, data )
+        return result

@@ -89,9 +89,9 @@ class TwitterComponent(BaseComponent):
         """
         # Get my parameters
         if method == HTTP.GET:
-            return HTTP.OK, self.__get_status(self.account_name)
+            return Result.ok(self.__get_status(self.account_name))
         else:
-            return HTTP.OK, self.__post_status(self.account_name, self.account_password, input)
+            return Result.ok(self.__post_status(self.account_name, self.account_password, input))
 
     def timeline(self, method, input):
         """
@@ -120,5 +120,5 @@ class TwitterComponent(BaseComponent):
             obj = json.loads(obj_str)
         else:
             obj = obj_str
-        return code, obj
+        return Result.ok(obj)
 

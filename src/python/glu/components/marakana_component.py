@@ -220,19 +220,17 @@ class MarakanaComponent(BaseComponent):
 
         # Get my parameters
         param_order_id = id
-        code = HTTP.OK
         if not param_order_id  and  not input:
             # User didn't specify a specific order (and also doesn't POST a new order object),
             # which means we should generate a list of all the orders we have stored.
-            data = self.__get_order_list(storage)
+            return Result.ok(self.__get_order_list(storage))
         else:
             if method == HTTP.DELETE:
                 if param_order_id:
                     storage.deleteFile(param_order_id)
-                    data = "File deleted"
+                    return Result.ok("File deleted")
                 else:
-                    code = HTTP.BAD_REQUEST
-                    data = "Missing order id"
+                    return Result.badRequest("Missing order id")
             else:
                 if input:
                     # Parse the input into JSON
@@ -250,24 +248,22 @@ class MarakanaComponent(BaseComponent):
                             self.__dict_struct_compare(d, self.__REGISTRATION_ORDER_TEMPLATE)
                             order_id = d['spark-domain']['registration-order']['__attributes']['id']
                     except Exception, e:
-                        return HTTP.BAD_REQUEST, "Malformed request  body: " + str(e)
+                        return Result.badRequest("Malformed request  body: " + str(e))
                     
                     # Creating or updating order
                     location_str = "%s/orders/%s" % (self.getMyResourceUri(), order_id)
                     if param_order_id:
                         if param_order_id != order_id:
-                            return HTTP.BAD_REQUEST, "Order ID in URL and message body do not match (%s vs. %s)" % (param_order_id, order_id)
+                            return Result.badRequest("Order ID in URL and message body do not match (%s vs. %s)" % (param_order_id, order_id))
                         # Update an already existing order? Throws exception if it does not
                         # exist, which is exactly what we want.
                         dummy_data = storage.loadFile(order_id)
-                        code       = HTTP.OK
-                        data       = "Successfully updated: %s" % location_str
+                        result = Result.ok("Successfully updated: %s" % location_str)
                     else:
                         # Creating a new order? We need to extract the order id.
                         if self.getRequest():
                             self.getRequest().setResponseHeader("Location", location_str)
-                        code = HTTP.CREATED
-                        data = "Successfully stored: %s" % location_str
+                        result = Result.created("Successfully stored: %s" % location_str)
 
                     # Store the data, but only the dictionary that contains the actual order info.
                     # We store it in a dictionary that contains a single key and this data, since
@@ -275,9 +271,9 @@ class MarakanaComponent(BaseComponent):
                     storage.storeFile(order_id, json.dumps({ doc_name : d['spark-domain'][doc_name] }))
                 else:
                     # Just want to retrieve an existing order
-                    data = json.loads(storage.loadFile(param_order_id))
+                    result = Result.ok(json.loads(storage.loadFile(param_order_id)))
 
-        return code, data
+        return result
 
 
     def matches(self, method, input):
@@ -334,6 +330,6 @@ class MarakanaComponent(BaseComponent):
 
 
         out['summary'] = "%d matches." % match_count
-        return HTTP.OK, out
+        return Result.ok(out)
 
 

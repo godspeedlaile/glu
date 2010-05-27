@@ -7,6 +7,8 @@ to the appropriate browsers.
 import glu.settings as settings
 
 from org.mulesource.glu.exception             import *
+from org.mulesource.glu.component.api         import HTTP, Result
+
 from glu.core.basebrowser       import BaseBrowser
 from glu.core.staticbrowser     import StaticBrowser
 from glu.core.metabrowser       import MetaBrowser
@@ -39,8 +41,8 @@ class RequestDispatcher(object):
         @param request:   A properly wrapped request.
         @type request:    GluHttpRequest
         
-        @return:          Response code, body and headers
-        @rtype:           Tuple of (int, string, dict)
+        @return:          Response structure and headers
+        @rtype:           Tuple of (Result, dict)
         
         """
         #print "---- ", request.getRequestHeaders()
@@ -55,26 +57,26 @@ class RequestDispatcher(object):
             
             if browser_class:
                 browser_instance = browser_class(request)
-                ( code, data )   = browser_instance.process()
-                if code >= 200  and  code < 300:
+                result           = browser_instance.process()
+                if result.getStatus() >= 200  and  result.getStatus() < 300:
                     # If all was OK with the request then we will
                     # render the output in the format that was
                     # requested by the client.
-                    content_type, data = browser_instance.renderOutput(data)
+                    content_type, data = browser_instance.renderOutput(result.getEntity())
+                    result.setEntity(data)
             else:
-                (code, data) = ( 404, "404 Not found" )
+                result = Result.notFound("Not found" )
         except GluMethodNotAllowedException, e:
-            (code, data) = e.code, e.msg
+            result = Result(e.code, e.msg)
         except GluMandatoryParameterMissingException, e:
-            (code, data) = e.code, e.msg
+            result = Result(e.code, e.msg)
         except GluFileNotFoundException, e:
-            (code, data) = e.code, e.msg
+            result = Result(e.code, e.msg)
         except GluException, e:
-            (code, data) = ( 400, "Bad request: " + e.msg)
+            result = Result.badRequest("Bad request: " + e.msg)
 
-        headers = dict()
         if content_type:
-            headers["Content-type"] = content_type
+            result.addHeader("Content-type", content_type);
         
-        return (code, data, headers)
+        return result
 

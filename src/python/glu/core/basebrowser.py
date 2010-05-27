@@ -8,7 +8,7 @@ import glu.settings as settings
 from glu.render import HtmlRenderer
 from glu.render import JsonRenderer
 
-from org.mulesource.glu.component.api import HTTP;
+from org.mulesource.glu.component.api import HTTP, Result
 
 class BaseBrowser(object):
     """
@@ -105,6 +105,6 @@ class BaseBrowser(object):
         @rtype:   tuple
         
         """
-        return ( HTTP.OK, "Base Browser" )
+        return Result.ok("Base Browser")
 
                 

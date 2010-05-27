@@ -67,10 +67,9 @@ class CombinerComponent(BaseComponent):
         #code, data = accessResource("/resource/MyGoogleSearch/search", params = { "query" : "mule+esb" })
         code, data = accessResource("/resource/MyJavaTestComponent/foobar",
                                     params = { "query" : "mule+esb", "num" : 1123 })
-        print "@@@@@@@@@@@@@@@@@ received data: ", type(data), data
         if code == HTTP.OK:
-            data = "Received the following data: " + str(data)
+            result = Result.ok(data)
         else:
-            data = "Looks like there was a problem: " + str(data)
-        return code, data
+            result = Result(code, "Looks like there was a problem: " + str(data))
+        return result
 
