@@ -10,26 +10,67 @@
 
 package org.mulesource.glu.component.api;
 
+import java.util.HashMap;
+
+/*
+ * Inspired by the Result class defined for JAX-RS
+ */
 public class Result
 {
-    private int    code;
-    private Object obj;
+    private int                     code;
+    private Object                  data;
+    private HashMap<String, String> headers;
         
-    public Result(int code, Object obj)
+    public static Result ok()
     {
-        this.code = code;
-        this.obj  = obj;
+        return new Result(HTTP.OK, null);
     }
     
-    public int getCode()
+    public static Result ok(Object data)
+    {
+        return new Result(HTTP.OK, data);
+    }
+    
+    public static Result created(String uri)
+    {
+        Result res = new Result(HTTP.CREATED, null);
+        res.headers.put("Location", uri);
+        return res;
+    }
+    
+    public static Result noContent()
+    {
+        return new Result(HTTP.NO_CONTENT, null);
+    }
+    
+    public static Result temporaryRedirect(String uri)
+    {
+        Result res = new Result(HTTP.TEMPORARY_REDIRECT, null);
+        res.headers.put("Location", uri);
+        return res;
+    }
+    
+    public Result(int code, Object data)
+    {
+        this.code = code;
+        this.data  = data;
+    }
+    
+    public int getStatus()
     {
         return code;
     }
     
-    public Object getObject()
+    public Object getEntity()
     {
-        return obj;
+        return data;
+    }
+    
+    public HashMap<String, String> getHeaders()
+    {
+        return headers;
     }
 }
+
 
 

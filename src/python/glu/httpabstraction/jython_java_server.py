@@ -131,7 +131,10 @@ class JythonJavaHttpRequest(GluHttpRequest):
         @rtype:     string
         
         """
-        return self.__native_req.getProtocol()
+        if self.__native_req:
+            return self.__native_req.getProtocol()
+        else:
+            return None
     
     def getRequestMethod(self):
         """
@@ -141,7 +144,10 @@ class JythonJavaHttpRequest(GluHttpRequest):
         @rtype:     string
         
         """
-        return self.__native_req.getRequestMethod().upper()
+        if self.__native_req:
+            return self.__native_req.getRequestMethod().upper()
+        else:
+            return None
 
     def getRequestURI(self):
         """
@@ -152,9 +158,12 @@ class JythonJavaHttpRequest(GluHttpRequest):
         @rtype:     string
         
         """
-        if not self.__request_uri_str:
-            self.__request_uri_str = self.__native_req.getRequestURI().toString()
-        return self.__request_uri_str
+        if self.__native_req:
+            if not self.__request_uri_str:
+                self.__request_uri_str = self.__native_req.getRequestURI().toString()
+            return self.__request_uri_str
+        else:
+            return None
     
     def getRequestPath(self):
         """
@@ -164,7 +173,10 @@ class JythonJavaHttpRequest(GluHttpRequest):
         @rtype:     string
         
         """
-        return self.__native_req.getRequestURI().getPath()
+        if self.__native_req:
+            return self.__native_req.getRequestURI().getPath()
+        else:
+            return None
     
     def getRequestHeaders(self):
         """
@@ -177,12 +189,15 @@ class JythonJavaHttpRequest(GluHttpRequest):
         @rtype:     dict
         
         """
-        if not self.__request_headers:
-            self.__request_headers = self.__native_req.getRequestHeaders()
-        if self._native_mode:
-            return self.__request_headers
+        if self.__native_req:
+            if not self.__request_headers:
+                self.__request_headers = self.__native_req.getRequestHeaders()
+            if self._native_mode:
+                return self.__request_headers
+            else:
+                return dict(self.__request_headers)
         else:
-            return dict(self.__request_headers)
+            return None
     
     def getRequestQuery(self):
         """
@@ -192,7 +207,10 @@ class JythonJavaHttpRequest(GluHttpRequest):
         @rtype:     string
         
         """
-        return self.__native_req.getRequestURI().getQuery()
+        if self.__native_req:
+            return self.__native_req.getRequestURI().getQuery()
+        else:
+            return None
     
     def getRequestBody(self):
         """
@@ -206,35 +224,40 @@ class JythonJavaHttpRequest(GluHttpRequest):
         @rtype:     string
         
         """
-        buffered_reader = BufferedReader(InputStreamReader(self.__native_req.getRequestBody()));
-        lines = []
-        while True:
-            line = buffered_reader.readLine()
-            if not line:
-                break
-            lines.append(line)
-        
-        return '\n'.join(lines)
+        if self.__native_req:
+            buffered_reader = BufferedReader(InputStreamReader(self.__native_req.getRequestBody()));
+            lines = []
+            while True:
+                line = buffered_reader.readLine()
+                if not line:
+                    break
+                lines.append(line)
+            
+            return '\n'.join(lines)
+        else:
+            return None
     
     def sendResponseHeaders(self):
         """
         Send the previously specified response headers and code.
         
         """
-        response_headers = self.__native_req.getResponseHeaders()
-        for name, value in self.__response_headers.items():
-            response_headers[name] = [ value ]
-        self.__native_req.sendResponseHeaders(self.__response_code, self.__response_body.length())
+        if self.__native_req:
+            response_headers = self.__native_req.getResponseHeaders()
+            for name, value in self.__response_headers.items():
+                response_headers[name] = [ value ]
+            self.__native_req.sendResponseHeaders(self.__response_code, self.__response_body.length())
     
     def sendResponseBody(self):
         """
         Send the previously specified request body.
         
         """
-        os = DataOutputStream(self.__native_req.getResponseBody())
-        os.writeBytes(self.__response_body)
-        os.flush()
-        os.close()
+        if self.__native_req:
+            os = DataOutputStream(self.__native_req.getResponseBody())
+            os.writeBytes(self.__response_body)
+            os.flush()
+            os.close()
         
     def sendResponse(self):
         """
@@ -252,7 +275,8 @@ class JythonJavaHttpRequest(GluHttpRequest):
         Close this connection.
         
         """
-        self.__native_req.close()  
+        if self.__native_req:
+            self.__native_req.close()  
 
 
 class __HttpHandler(HttpHandler):

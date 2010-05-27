@@ -15,9 +15,9 @@ conversion function whenever we use the components.
 
 """
 
-from glu.platform_specifics import PLATFORM, PLATFORM_JYTHON
+from glu.platform_specifics           import PLATFORM, PLATFORM_JYTHON
 
-from org.mulesource.glu.exception import *
+from org.mulesource.glu.exception     import *
 from org.mulesource.glu.component.api import HTTP, HttpMethod
 
 if PLATFORM == PLATFORM_JYTHON:
@@ -63,6 +63,23 @@ def __pythonStructToPython(obj):
     """
     return obj
 
+def __pythonStructToJava(obj):
+    """
+    Traverse dicts and lists and convert to Java HashMaps
+    and Vectors.
+    
+    """
+    if type(obj) is dict:
+        elem = HashMap()
+        for key, value in obj.items():
+            elem.put(key, __pythonStructToJava(value))
+    elif type(obj) is list:
+        elem = Vector()
+        for e in obj:
+            elem.add(__pythonStructToJava(e))
+    else:
+        elem = obj
+    return elem
 
 #
 # Translation table, which finds the correct conversion function
@@ -96,7 +113,9 @@ def __javaServiceMethodProxy(component, method, method_name, input, params, http
     Prepares parameters, converts exceptions and results.
     
     """
-    component.getRequest().setNativeMode()
+    req = component.getRequest()
+    if req:
+        req.setNativeMode()
     # We remove the resource creation time parameters from the map and
     # assign them directly to the component as new attributes. After that,
     # the pruned parameter map can be passed as keyword arg dict to the
@@ -126,13 +145,22 @@ def __javaServiceMethodProxy(component, method, method_name, input, params, http
                     arglist.append(param_value)
         else:
             arglist = list()
-        res = method(http_method, String(input), *arglist)
+
+        # Importing at this odd place here avoids circular imports in other places
+        from resource_accessor import ResourceAccessor
+
+        # Provide a conversion methods specific to this component's language.
+        # Passing them to ResourceAccessor means that I don't have to import those
+        # symbols in the resource_accessor module.        
+        component.resourceAccessor = ResourceAccessor(__javaStructToPython, __pythonStructToJava)
+        res = method(http_method, String(input if input is not None else ""), *arglist)
     except GluException, e:
         raise e
     except java.lang.Exception, e:
+        print "Exception in component: ", e.printStackTrace()
         raise GluException(str(e))
-    code = res.getCode()
-    data = res.getObject()
+    code = res.getStatus()
+    data = res.getEntity()
     if type(data) in [ HashMap, Vector ]:
         data = __javaStructToPython(data)
     return code, data
@@ -163,18 +191,6 @@ __LANG_METHOD_PROXIES = {
     "PYTHON" : __pythonServiceMethodProxy,
 }
 
-#
-# Translates the string representation of the HTTP method to
-# the HttpMethod enum type.
-#
-__HTTP_METHOD_LOOKUP = {
-    HTTP.GET_METHOD     : HttpMethod.GET,
-    HTTP.POST_METHOD    : HttpMethod.POST,
-    HTTP.PUT_METHOD     : HttpMethod.PUT,
-    HTTP.DELETE_METHOD  : HttpMethod.DELETE,
-    HTTP.HEAD_METHOD    : HttpMethod.HEAD,
-    HTTP.OPTIONS_METHOD : HttpMethod.OPTIONS,    
-}
 
 def serviceMethodProxy(component, service_method, service_method_name, request, input, params, http_method):
     """
@@ -193,5 +209,4 @@ def serviceMethodProxy(component, service_method, service_method_name, request, 
     func = __LANG_METHOD_PROXIES[component.LANGUAGE]
     component.setRequest(request)
     
-    return func(component, service_method, service_method_name, input, params,
-                __HTTP_METHOD_LOOKUP.get(http_method.upper(), HttpMethod.UNKNOWN))
+    return func(component, service_method, service_method_name, input, params, http_method)

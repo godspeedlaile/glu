@@ -17,6 +17,7 @@ import java.lang.reflect.*;
 import java.math.BigDecimal;
 
 import org.mulesource.glu.GluHttpRequest;
+import org.mulesource.glu.ResourceAccessorInterface;
 import org.mulesource.glu.Settings;
 import org.mulesource.glu.component.api.*;
 import org.mulesource.glu.exception.GluDuplicateKeyException;
@@ -28,6 +29,7 @@ public abstract class BaseComponent
 {
     public final String                              LANGUAGE = "JAVA";
     public       ComponentDescriptor                 componentDescriptor = null;
+    public       ResourceAccessorInterface           resourceAccessor;
 
     protected    HashMap<String, Object>             services;
 
@@ -77,6 +79,27 @@ public abstract class BaseComponent
     public GluHttpRequest getRequest()
     {
         return httpRequest;
+    }
+    
+    
+    public HttpResult accessResource(String uri)
+    {
+        return accessResource(uri, null, null, HTTP.GET);
+    }
+
+    public HttpResult accessResource(String uri, String input)
+    {
+        return accessResource(uri, input, null, HTTP.GET);
+    }
+
+    public HttpResult accessResource(String uri, String input, HashMap params)
+    {
+        return accessResource(uri, input, params, HTTP.GET);
+    }
+    
+    public HttpResult accessResource(String uri, String input, HashMap params, HttpMethod method)
+    {
+        return resourceAccessor.accessResourceProxy(uri, input, params, method);
     }
     
     private ParameterDef createParamDefType(Class paramType, String desc,

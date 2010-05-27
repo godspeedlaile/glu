@@ -33,7 +33,7 @@ public class JavaTwitterComponent extends BaseComponent
     {
         HttpResult res = httpGet("http://api.twitter.com/1/users/show.json?screen_name=" + account_name);
         if (res.status == HTTP.OK) {
-            return res.data;
+            return (String) res.data;
         }
         else {
             return "Problem with Twitter: " + res.data;
@@ -44,7 +44,7 @@ public class JavaTwitterComponent extends BaseComponent
     {
         httpSetCredentials(account_name, account_password);
         HttpResult res = httpPost("http://api.twitter.com/1/statuses/update.xml", "status=" + data);
-        return res.data;
+        return (String) res.data;
     }
     
     @Service(description = "You can GET the status or POST a new status to it.")

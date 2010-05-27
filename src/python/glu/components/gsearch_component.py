@@ -32,6 +32,9 @@ class GsearchComponent(BaseComponent):
                                                            required=False,
                                                            default=10)
                                }
+                           },
+                           "sss" : {
+                                    "desc" : "Some desc",
                            }
                        }
     
@@ -71,3 +74,6 @@ class GsearchComponent(BaseComponent):
                     return HTTP.BAD_REQUEST, "Result data was malformed: " + str(e)
         return code, results[:num]
 
+
+    def sss(self, input, method):
+        return 200, { "some float" : 123.456, "some int" : 111, "some list" : [ 11, "22", 33.3 ] }

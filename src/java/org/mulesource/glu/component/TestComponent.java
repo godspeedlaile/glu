@@ -28,16 +28,14 @@ public class TestComponent extends BaseComponent
     
     @Service(description = "This is the foobar service")
     public Result foobar(HttpMethod method, String input,
-                         @Parameter(name="query",
-                                    desc="This is the query string",
-                                    positional=true)
+                         
+                         @Parameter(name="query", desc="This is the query string", positional=true)
                          @Default("foo")
-                                                                         String     query,
-                         @Parameter(name="num",
-                                    desc="The number of results",
-                                    positional=true)
+                         String     query,
+                         
+                         @Parameter(name="num", desc="The number of results", positional=true)
                          @Default("10")
-                                                                         BigDecimal num)
+                         BigDecimal num)
     {
         System.out.println("----------------------------------------------------------");
         System.out.println("### input:   " + input.getClass() + " === " + input);
@@ -65,10 +63,14 @@ public class TestComponent extends BaseComponent
         return new Result(HTTP.OK, v);
     }
  
-    @Service(description = "This is the blahblah service")
+    @Service(description = "This accesses a Python Google search resource and returns the result")
     public Result blahblah(HttpMethod method, String input)
     {
-        return new Result(HTTP.OK, 112233);
+        HttpResult res;
+        HashMap params = new HashMap();
+        params.put("query", "foo");
+        res = accessResource("/resource/MyGoogleSearch/search", null, params);
+        return new Result(HTTP.OK, res.data);
     }
 }
 

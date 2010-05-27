@@ -35,10 +35,10 @@ from glu.platform_specifics import STORAGE_OBJECT
 from org.mulesource.glu.exception       import *
 from glu.logger           import *
 from glu.core.parameter   import TYPE_COMPATIBILITY
+from glu.languages import *
 
 from org.mulesource.glu.util import Url
 
-from glu.languages import *
 
 
 def getResourceUri(resource_name):

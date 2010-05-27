@@ -8,12 +8,16 @@
  * LICENSE.txt file.
  */
 
-package org.mulesource.glu.component.api;
+package org.mulesource.glu;
 
-public class HttpResult
+import java.util.HashMap;
+
+import org.mulesource.glu.component.api.HttpMethod;
+import org.mulesource.glu.component.api.HttpResult;
+
+public interface ResourceAccessorInterface
 {
-    public int    status;
-    public Object data;
+    public HttpResult accessResourceProxy(String uri, String input, HashMap params, HttpMethod method);
 }
 
 

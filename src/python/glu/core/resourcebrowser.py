@@ -10,14 +10,13 @@ import traceback
 import glu.settings as settings
 
 from org.mulesource.glu.exception     import *
-from org.mulesource.glu.component.api import HTTP;
+from org.mulesource.glu.component.api import HTTP, HttpMethod;
 
 from glu.logger                       import *
 from glu.core.basebrowser             import BaseBrowser
 from glu.core.codebrowser             import getComponentInstance
 from glu.resources                    import paramSanityCheck, fillDefaults, makeResource, listResources, \
                                              retrieveResourceFromStorage, getResourceUri, deleteResourceFromStorage
-from glu.components.base_capabilities import BaseCapabilities
 from glu.resources.resource_runner    import _accessComponentService, _getResourceDetails
 
 import java.lang.Exception
@@ -42,7 +41,20 @@ def get_request_query_dict(request):
         else:
             runtime_param_dict = dict()
         return runtime_param_dict
- 
+
+#
+# Translates the string representation of the HTTP method to
+# the HttpMethod enum type.
+#
+__HTTP_METHOD_LOOKUP = {
+    HTTP.GET_METHOD     : HttpMethod.GET,
+    HTTP.POST_METHOD    : HttpMethod.POST,
+    HTTP.PUT_METHOD     : HttpMethod.PUT,
+    HTTP.DELETE_METHOD  : HttpMethod.DELETE,
+    HTTP.HEAD_METHOD    : HttpMethod.HEAD,
+    HTTP.OPTIONS_METHOD : HttpMethod.OPTIONS,    
+}
+
 class ResourceBrowser(BaseBrowser):
     """
     Handles requests for resource info.
@@ -120,7 +132,6 @@ class ResourceBrowser(BaseBrowser):
             code_uri              = rinfo['code_uri']
             component             = rinfo['component']
             services              = public_resource_def['services']
-            component.setBaseCapabilities(BaseCapabilities(component))
 
             if method == HTTP.GET_METHOD:
                 self.breadcrums.append((resource_name, resource_home_uri))
@@ -140,9 +151,11 @@ class ResourceBrowser(BaseBrowser):
                 positional_params = path_elems[2:]
                 input             = self.request.getRequestBody()
                 try:
+                    http_method = __HTTP_METHOD_LOOKUP.get(self.request.getRequestMethod().upper(), HttpMethod.UNKNOWN)
                     code, data = _accessComponentService(component, services, complete_resource_def,
                                                          resource_name, service_name, positional_params,
-                                                         runtime_param_dict, input, self.request, self.request.getRequestMethod())
+                                                         runtime_param_dict, input, self.request,
+                                                         http_method)
                 except GluException, e:
                     code = e.code
                     data = e.msg

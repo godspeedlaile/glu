@@ -14,6 +14,8 @@ from glu.resources  import paramSanityCheck, fillDefaults, convertTypes, \
 
 from glu.languages import *
 
+from glu.components.base_capabilities import BaseCapabilities
+
 
 def _accessComponentService(component, services, complete_resource_def, resource_name, service_name,
                             positional_params, runtime_param_dict, input, request=None, method=None, direct_call=False):
@@ -52,6 +54,9 @@ def _accessComponentService(component, services, complete_resource_def, resource
 
     @param request:               HTTP request structure.
     @type request:                GluHttpRequest
+    
+    @param method:                Http method of the request.
+    @type method:                 HttpMethod
     
     @param direct_call:           Set this if the function is called directly from another component
                                   or piece of code that's not part of Glu. In that case, it wraps
@@ -150,8 +155,11 @@ def _accessComponentService(component, services, complete_resource_def, resource
                 # Merge the runtime parameters with the static parameters
                 # from the resource definition.
                 params.update(runtime_param_dict)
-            
-            code, data = serviceMethodProxy(component, service_method, service_name, request, input, params, method)
+
+            component.setBaseCapabilities(BaseCapabilities(component))
+
+            code, data = serviceMethodProxy(component, service_method, service_name, request,
+                                            input, params, method)
         else:
             raise GluException("Service '%s' is not exposed by this resource." % service_name)
     except GluException, e:
@@ -196,7 +204,7 @@ def _getResourceDetails(resource_name):
                 component             = component)
 
      
-def accessResource(resource_uri, input=None, params=None, method=HTTP.GET_METHOD):
+def accessResource(resource_uri, input=None, params=None, method=HTTP.GET):
     """
     Access a resource identified by its URI.
     
@@ -215,7 +223,7 @@ def accessResource(resource_uri, input=None, params=None, method=HTTP.GET_METHOD
     @type params:            dict
     
     @param method:           The HTTP method to be used.
-    @type method:            string
+    @type method:            HttpMethod
     
     """
     if not resource_uri.startswith(settings.PREFIX_RESOURCE + "/"):
@@ -225,8 +233,12 @@ def accessResource(resource_uri, input=None, params=None, method=HTTP.GET_METHOD
     # Get the public representation of the resource
     path_components   = resource_uri.split("/")
     resource_name     = path_components[0]
-    service_name      = path_components[1]
-    positional_params = path_components[2:]
+    try:
+        service_name  = path_components[1]
+    except:
+        raise GluBadRequestException("Service method missing")
+
+    positional_params = path_components[2:]   # Doesn't throw exception if not present, just yields []
 
     rinfo = _getResourceDetails(resource_name)
 
