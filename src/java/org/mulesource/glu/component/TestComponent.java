@@ -24,7 +24,7 @@ import org.mulesource.glu.exception.GluException;
 public class TestComponent extends BaseComponent
 {    
     @Parameter(name="api_key", desc="This is the API key")
-    @Default("foo foo foo")
+    //@Default("foo foo foo")
     public String api_key;
     
     @Service(description = "This is the foobar service")

@@ -88,6 +88,9 @@ class BaseComponent(object):
     def setRequest(self, request):
         self.__http_request = request
         
+    def getDocs(self):
+        return self.DOCUMENTATION
+        
     def getRequestUri(self):
         return self.__http_request.getRequestURI()
 

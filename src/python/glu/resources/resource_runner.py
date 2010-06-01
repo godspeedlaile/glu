@@ -133,6 +133,7 @@ def _accessComponentService(component, services, complete_resource_def, resource
                 # Take the base definition of the parameters from the request body
                 try:
                     base_params = json.loads(input.strip())
+                    input       = None  # The input is now 'used up'
                 except ValueError, e:
                     # Probably couldn't parse JSON properly.
                     base_param = {}
@@ -160,6 +161,11 @@ def _accessComponentService(component, services, complete_resource_def, resource
                 params.update(runtime_param_dict)
 
             component.setBaseCapabilities(BaseCapabilities(component))
+            
+            # A request header may tell us about the request body type. If it's
+            # JSON then we first convert this to a plain object
+            if "application/json" in request.getRequestHeaders().get("Content-type"):
+                input = json.loads(input)
 
             result = serviceMethodProxy(component, service_method, service_name, request,
                                         input, params, method)

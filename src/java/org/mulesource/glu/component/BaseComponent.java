@@ -78,6 +78,11 @@ public abstract class BaseComponent
         this.httpRequest = request;
     }
     
+    public String getDocs()
+    {
+        return this.componentDescriptor.getDocs();
+    }
+    
     public String getRequestUri()
     {
         return httpRequest.getRequestURI();
@@ -293,7 +298,7 @@ public abstract class BaseComponent
         d.put("uri",      getCodeUri());
         d.put("name",     getName());
         d.put("desc",     getDesc());
-        d.put("doc",      getDoc());
+        d.put("doc",      getCodeUri() + "/doc");
         d.put("params",   changeParamsToPlainDict(componentDescriptor.getParamMap()));
         d.put("services", _getServices(null));
         

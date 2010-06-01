@@ -65,10 +65,11 @@ class TwitterComponent(BaseComponent):
         @rtype:             string
         
         """
-        # Get the status for this account from Twitter (we get it in JSON format)
+        # Send a new status string to the Twitter account
         self.httpSetCredentials(accountname, password)
         code, data = self.httpPost("http://api.twitter.com/1/statuses/update.xml",
                                    "status=%s" % input)
+        data = "Status updated"
 
         # Return the requested information, in this case the latest status
         return data
