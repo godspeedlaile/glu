@@ -274,12 +274,14 @@ class GluServer(object):
         to get_all_resource_names() or get_all_resource_names_plus()
         results in a request to the server.
 
+        The information is NOT cached since resources can be
+        created frequently.
+
         @return:        List of resource names.
         @rtype:         list
 
         """
-        if not self.__resources:
-            status, self.__resources = self._json_send(self.__resource_uri, status=200)
+        status, self.__resources = self._json_send(self.__resource_uri, status=200)
         return self.__resources.keys()
 
     def get_all_resource_names_plus(self):
@@ -294,14 +296,14 @@ class GluServer(object):
         containing further dictionaries, each containing a 'desc'
         and 'uri' element.
 
-        The information is cached.
+        The information is NOT cached since resources can be
+        created frequently.
 
         @return:        Dictionary with high-level resource info.
         @rtype:         dict
 
         """
-        if not self.__resources:
-            status, self.__resources = self._json_send(self.__resource_uri, status=200)
+        status, self.__resources = self._json_send(self.__resource_uri, status=200)
         return self.__resources
 
     def get_all_component_names(self):
