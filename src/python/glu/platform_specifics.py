@@ -6,6 +6,8 @@ or a different storage abstraction.
 
 """
 
+import settings
+
 #
 # These are the three types of platforms we currently know about.
 #
@@ -31,7 +33,7 @@ if PLATFORM == PLATFORM_GAE:
     STORAGE_OBJECT = GaeStorage()
 else:
     from glu.storageabstraction.resource_storage import ResourceStorage
-    STORAGE_OBJECT = ResourceStorage("resourceDB")
+    STORAGE_OBJECT = ResourceStorage(settings.RESOURCEDB_LOCATION)
 
 
 #

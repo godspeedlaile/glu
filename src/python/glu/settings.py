@@ -11,8 +11,10 @@ PREFIX_RESOURCE = "/resource"
 PREFIX_STATIC   = "/static"
 
 LISTEN_PORT     = 8001
-#STATIC_LOCATION = "/home/jbrendel/Programming/google_appengine/glu/static_files/"
-STATIC_LOCATION = "static_files/"
+
+STATIC_LOCATION     = "../../static_files/"
+RESOURCEDB_LOCATION = "../../resourceDB/"
+STOAGEDB_LOCATION   = "../../storageDB/"
 
 NEVER_HUMAN   = False
 
