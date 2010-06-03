@@ -11,11 +11,10 @@
 package org.mulesource.glu.component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 
 import org.mulesource.glu.component.api.*;
-import org.mulesource.glu.exception.GluException;
 
 
 @ComponentInfo(name        = "TestComponent",
@@ -51,12 +50,12 @@ public class TestComponent extends BaseComponent
         res.put("bar", sub);
         sub.put("some value", 1);
         sub.put("another value", "Some text");
-        Vector v = new Vector();
+        ArrayList v = new ArrayList();
         v.add("Blah");
         v.add(12345);
-        sub.put("some vector", v);
+        sub.put("some ArrayList", v);
         
-        v = new Vector();
+        v = new ArrayList();
         v.add("Some text");
         v.add(123);
         v.add(res);

@@ -23,12 +23,12 @@ from org.mulesource.glu.component.api import HTTP, HttpMethod, Result
 if PLATFORM == PLATFORM_JYTHON:
     import java.lang.Exception
     from java.lang import String
-    from java.util import HashMap, Vector
+    from java.util import HashMap, ArrayList
 
 
 def __javaStructToPython(hm):
     """
-    Convert a Java HashMap and Vector based structure to a Python dictionary or list.
+    Convert a Java HashMap and ArrayList based structure to a Python dictionary or list.
     
     Sadly, this is not done automatically. So, we recursively
     iterate over the hash map and convert using the 'update' method
@@ -40,13 +40,13 @@ def __javaStructToPython(hm):
         d2 = dict()
         d2.update(hm)
         for key, val in d2.items():
-            if type(val) in [ HashMap, Vector ]:
+            if type(val) in [ HashMap, ArrayList ]:
                 d2[key] = __javaStructToPython(val)
 
-    elif type(hm) is Vector:
+    elif type(hm) is ArrayList:
         d2 = list()
         for val in hm:
-            if type(val) in [ HashMap, Vector ]:
+            if type(val) in [ HashMap, ArrayList ]:
                 d2.append(__javaStructToPython(val))
             else:
                 d2.append(val)
@@ -66,7 +66,7 @@ def __pythonStructToPython(obj):
 def __pythonStructToJava(obj):
     """
     Traverse dicts and lists and convert to Java HashMaps
-    and Vectors.
+    and ArrayLists.
     
     """
     if type(obj) is dict:
@@ -74,7 +74,7 @@ def __pythonStructToJava(obj):
         for key, value in obj.items():
             elem.put(key, __pythonStructToJava(value))
     elif type(obj) is list:
-        elem = Vector()
+        elem = ArrayList()
         for e in obj:
             elem.add(__pythonStructToJava(e))
     else:
@@ -159,7 +159,7 @@ def __javaServiceMethodProxy(component, request, method, method_name, input, par
         print "Exception in component: ", e.printStackTrace()
         raise GluException(str(e))
     data = res.getEntity()
-    if type(data) in [ HashMap, Vector ]:
+    if type(data) in [ HashMap, ArrayList ]:
         data = __javaStructToPython(data)
         res.setEntity(data)
     return res

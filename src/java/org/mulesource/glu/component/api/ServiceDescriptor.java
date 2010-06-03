@@ -12,9 +12,7 @@ package org.mulesource.glu.component.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 
-import org.mulesource.glu.exception.GluException;
 import org.mulesource.glu.exception.GluDuplicateKeyException;
 import org.mulesource.glu.exception.GluMalformedServiceDescriptorException;
 import org.mulesource.glu.parameter.ParameterDef;
@@ -27,13 +25,13 @@ public class ServiceDescriptor
     private String desc;
     
     private HashMap<String, ParameterDef> params;
-    private Vector<String>                positionalParams;
+    private ArrayList<String>             positionalParams;
 
     public ServiceDescriptor(String desc)
     {
         this.desc             = desc;
         this.params           = new HashMap<String, ParameterDef>();
-        this.positionalParams = new Vector<String>();
+        this.positionalParams = new ArrayList<String>();
     }
     
     public String getDesc()
@@ -68,7 +66,7 @@ public class ServiceDescriptor
         }
     }
     
-    public Vector<String> getPositionalParams()
+    public ArrayList<String> getPositionalParams()
     {
         return positionalParams;
     }

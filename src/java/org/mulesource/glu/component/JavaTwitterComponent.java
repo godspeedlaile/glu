@@ -12,7 +12,7 @@ package org.mulesource.glu.component;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.mulesource.glu.component.api.*;
 
