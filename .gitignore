@@ -3,6 +3,6 @@
 *.class
 *#
 *.swp
-resourceDB/*
-storageDB/*
-static_files/*
+#resourceDB/*
+#storageDB/*
+#static_files/*
