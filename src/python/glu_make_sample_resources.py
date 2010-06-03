@@ -7,8 +7,8 @@ import simplejson as json
 #
 # Specify the account name and password
 #
-TWITTER_ACCOUNT  = "BrendelConsult"      # Replace those two with actual account credentials
-TWITTER_PASSWORD = "tw88erbahn"
+TWITTER_ACCOUNT  = "##################"      # Replace those two with actual account credentials
+TWITTER_PASSWORD = "***********"
 
 #SERVER_URL = "http://mulesoft-glu.appspot.com"
 #SERVER_URL = "http://localhost:8080"
