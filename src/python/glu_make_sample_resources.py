@@ -57,8 +57,15 @@ def send_test(data, code_url):
         opener.add_msg(json.dumps(data))
     stream = opener.send(code_url)
     
+    is_stream = True
+    if ERROR_INFO[0] == 201:
+        stream = ERROR_INFO[2]
+        is_stream = False
     if stream:
-        data   = stream.read()
+        if is_stream:
+            data = stream.read()
+        else:
+            data = stream
         print "Received data: ", data
     else:
         print "ERROR: ", ERROR_INFO
