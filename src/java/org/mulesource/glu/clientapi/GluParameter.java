@@ -61,11 +61,11 @@ public class GluParameter
     public GluParameter(String name, HashMap<String, ?> pdef)
     {
         this.name = name;
-        try {
+        //try {
             desc     = (String)pdef.get(DESC_KEY);
             required = boolConvert(pdef.get(REQUIRED_KEY));
             typeStr  = (String)pdef.get(TYPE_KEY);
-        }
+        //}
         
     }
 
