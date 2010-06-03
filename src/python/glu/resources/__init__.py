@@ -40,6 +40,7 @@ from glu.languages import *
 from org.mulesource.glu.util import Url
 
 
+EXCLUDED_NAMES = [ "readme.txt" ]
 
 def getResourceUri(resource_name):
     """
@@ -121,11 +122,12 @@ def listResources():
     dir_list = STORAGE_OBJECT.listResourcesInStorage()
     out = {}
     for resource_name in dir_list:
-        resource_dict = retrieveResourceFromStorage(getResourceUri(resource_name), only_public=True)
-        if resource_dict:
-            out[resource_name] = dict(uri=Url(resource_dict['uri']), desc=resource_dict['desc'])
-        else:
-            out[resource_name] = "Not found"
+        if resource_name.lower() not in EXCLUDED_NAMES:
+            resource_dict = retrieveResourceFromStorage(getResourceUri(resource_name), only_public=True)
+            if resource_dict:
+                out[resource_name] = dict(uri=Url(resource_dict['uri']), desc=resource_dict['desc'])
+            else:
+                out[resource_name] = "Not found"
     return out
 
 
