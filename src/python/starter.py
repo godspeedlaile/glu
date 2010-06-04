@@ -10,21 +10,16 @@ import time
 
 # Glu imports
 import glu.settings as settings
-from glu.core               import RequestDispatcher
-from glu.platform_specifics import *
 
-from org.mulesource.glu import Settings
+from glu.core                import RequestDispatcher
+from glu.platform_specifics  import *
+
+from org.mulesource.glu      import Settings
 from org.mulesource.glu.util import Url
 
 from org.mulesource.glu.component.api import *
 
 if __name__ == '__main__':
-    f = Settings();
-
-    u = Url("http://foo.bar.com")
-    print "Type:     " + str(type(u));
-    print "equal: ", type(u) == Url
-        
     my_server = HttpServer(settings.LISTEN_PORT, RequestDispatcher())
 
     # For the Java server: Need to wait forever, since otherwise

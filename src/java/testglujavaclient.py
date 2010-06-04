@@ -17,3 +17,6 @@ res = s.access()
 print res.status
 print res.data
 
+r.delete()
+
+

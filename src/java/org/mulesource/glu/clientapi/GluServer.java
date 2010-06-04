@@ -46,6 +46,10 @@ public class GluServer
     protected static final String            META_URI         = "/";
     protected static final String            DESCURI_DESC_KEY = "desc";
     protected static final String            DESCURI_URI_KEY  = "uri";
+    
+    protected static final String[]          REQUIRED_KEYS    = { CODE_URI_KEY, DOC_URI_KEY, NAME_KEY,
+                                                                  RESOURCE_URI_KEY, STATIC_URI_KEY,
+                                                                  VERSION_KEY };
 
     protected HashMap<String, String>        DEFAULT_REQ_HEADERS;
     protected String                         serverUri;
@@ -120,12 +124,10 @@ public class GluServer
         HttpURLConnection conn    = null;
 
         try {
-            System.out.println("@@@@@ in send: URL is: " + url);
             if (!url.startsWith("/")) {
                 url = "/" + url;
             }
             fullUrl = new URL(serverUri + url);
-            System.out.println("@@@@@ in send: FULL URL is: " + fullUrl);
             conn    = (HttpURLConnection) fullUrl.openConnection();
 
             // Set the request headers
@@ -182,6 +184,12 @@ public class GluServer
                     // connection was initialised.
                     code = HttpURLConnection.HTTP_INTERNAL_ERROR;
                     msg  = e.getMessage();
+                }
+                if (status != null) {
+                    if (status != code) {
+                        throw new GluClientException("Status code " + status + " was expected for request to '" +
+                                                     fullUrl + "'. Instead we received " + code);
+                    }
                 }
                 return new HttpResult(code, msg);
             }
@@ -249,16 +257,19 @@ public class GluServer
      */
     protected static HashMap jsonObjectTranscribe(JSONObject obj) throws JSONException
     {
-        HashMap d = new HashMap();
-        for (String name : JSONObject.getNames(obj)) {
-            Object o = obj.get(name);
-            if (o.getClass() == JSONArray.class) {
-                o = jsonListTranscribe((JSONArray) o);
+        HashMap  d         = new HashMap();
+        String[] nameArray = JSONObject.getNames(obj);
+        if (nameArray != null) {
+            for (String name : JSONObject.getNames(obj)) {
+                Object o = obj.get(name);
+                if (o.getClass() == JSONArray.class) {
+                    o = jsonListTranscribe((JSONArray) o);
+                }
+                else if (o.getClass() == JSONObject.class) {
+                    o = jsonObjectTranscribe((JSONObject) o);
+                }
+                d.put(name, o);
             }
-            else if (o.getClass() == JSONObject.class) {
-                o = jsonObjectTranscribe((JSONObject) o);
-            }
-            d.put(name, o);
         }
         return d;
     }
@@ -420,6 +431,25 @@ public class GluServer
      *******************************************************************/
 
     /**
+     * Useful utility method, which checks whether a map contains all required keys.
+     * 
+     * Throws an exception if not all required keys are present.
+     * 
+     * @param  hm            Map to check for required keys.
+     * @param  requiredKeys  List of required keys.
+     * 
+     * @throws               GluClientException 
+     */
+    public static void checkKeyset(HashMap hm, String[] requiredKeys) throws GluClientException
+    {
+        for (String name : requiredKeys) {
+            if (!hm.containsKey(name)) {
+                throw new GluClientException("Missing expected key '" + name + ".");
+            }
+        }
+    }
+    
+    /**
      * Create a new client-side representation of a GluServer.
      * 
      * A request is sent for the server's meta data information. Some basic sanity
@@ -470,13 +500,11 @@ public class GluServer
         HashMap<String, String> hm  = (HashMap<String, String>)res.data;
 
         // Sanity check on received information
-        String[] requiredKeys = {CODE_URI_KEY, DOC_URI_KEY, NAME_KEY, RESOURCE_URI_KEY, STATIC_URI_KEY,
-            VERSION_KEY};
-        for (String name : requiredKeys) {
-            if (!hm.containsKey(name)) {
-                throw new GluClientException("Server error: Expected key '" + name +
-                                             "' missing in server meta data.");
-            }
+        try {
+            checkKeyset(hm, REQUIRED_KEYS);
+        }
+        catch (GluClientException e) {
+            throw new GluClientException("Server error: Malformed server meta data: " + e.getMessage());
         }
 
         // Store the meta data for later use
@@ -512,9 +540,10 @@ public class GluServer
      * 
      * @throws       GluClientException
      */
-    protected HttpResult createResource(String uri, Object rdict) throws GluClientException
+    protected HashMap<String, Object> createResource(String uri, Object rdict) throws GluClientException
     {
-        return jsonSend(uri, rdict, null, 200, null);
+        HttpResult res = jsonSend(uri, rdict, null, 201, null);
+        return (HashMap<String, Object>) res.data;
     }
     
     /**

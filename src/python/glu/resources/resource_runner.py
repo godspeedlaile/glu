@@ -164,11 +164,13 @@ def _accessComponentService(component, services, complete_resource_def, resource
             
             # A request header may tell us about the request body type. If it's
             # JSON then we first convert this to a plain object
-            req_headers = request.getRequestHeaders()
-            if req_headers:
-                ct = req_headers.get("Content-type")
-                if ct  and  "application/json" in ct:
-                    input = json.loads(input)
+            if request:
+                req_headers = request.getRequestHeaders()
+                if req_headers:
+                    ct = req_headers.get("Content-type")
+                    if ct  and  "application/json" in ct:
+                        if input:
+                            input = json.loads(input)
 
             result = serviceMethodProxy(component, service_method, service_name, request,
                                         input, params, method)

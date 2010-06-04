@@ -139,4 +139,11 @@ class GluResource(object):
         except KeyError:
             raise GluClientException("Service '%s' not defined." % name)
 
+    def delete(self):
+        """
+        Delete the resource on the server.
+
+        """
+        self.__server._send(self.__uri, method="DELETE", status=200)
+
 

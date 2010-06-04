@@ -87,7 +87,7 @@ public class GluComponent
             // this into a dictionary of proper GluService objects.
             services = new HashMap<String, GluService>();
             for (String sname : sdict.keySet()) {
-                services.put(sname, new GluService(sname, (HashMap<String, ?>)pdict.get(sname)));
+                services.put(sname, new GluService(sname, (HashMap<String, ?>)sdict.get(sname)));
             }
         }
         catch (Exception e) {
@@ -101,7 +101,7 @@ public class GluComponent
      * Clients don't use this method, but instead create a resource
      * through a {@link GluResourceTemplate} object.
      * 
-     * @param  uri   The full URI (starting with a '/') of the component.
+     * This method sends a request to this components own URI.
      * 
      * @param  rdict The dictionary with all required parameters for the
      *               resource creation.
@@ -110,9 +110,9 @@ public class GluComponent
      * 
      * @throws       GluClientException
      */
-    protected HttpResult createResource(String uri, Object rdict) throws GluClientException
+    protected HashMap<String, Object> createResource(Object rdict) throws GluClientException
     {
-        return server.jsonSend(uri, rdict, null, 200, null);
+        return server.createResource(uri, rdict);
     }
     
     /**
@@ -208,6 +208,16 @@ public class GluComponent
     public HashMap<String, GluParameter> getAllParameters()
     {
         return parameters;
+    }
+    
+    /**
+     * Return a single parameter definition.
+     * 
+     * @return  A single {@link GluParameter} object.
+     */
+    public GluParameter getParameter(String name)
+    {
+        return parameters.get(name);
     }
     
     /**

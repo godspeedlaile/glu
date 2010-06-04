@@ -56,7 +56,17 @@ print r
 print r.get_all_services()
 s = r.get_service("blahblah")
 print s
+
 print s.access()
+
+
+print "\n\n--------------------------------------------\n\n"
+
+status, data = server.get_resource("MyGoogleSearch").get_service("search").set("query", "mulesoft").access()
+
+print data
+
+r.delete()
 
 
 

@@ -27,7 +27,7 @@ class GluResourceTemplate(object):
 
     def __init__(self, comp):
         """
-        Create a new resource template in memomory.
+        Create a new resource template in memory.
 
         @param comp:      The GluComponent which created this template.
         @type comp:       GluComponent

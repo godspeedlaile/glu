@@ -79,9 +79,9 @@ class GluService(object):
 
     def get_name(self):
         """
-        Return the name of the component.
+        Return the name of the service.
 
-        @return:    Name of component.
+        @return:    Name of service.
         @rtype:     string
 
         """
@@ -89,9 +89,9 @@ class GluService(object):
 
     def get_description(self):
         """
-        Return the description of the component.
+        Return the description of the service.
 
-        @return     Description of the component.
+        @return     Description of the service.
         @rtype:     string
 
         """
@@ -99,9 +99,9 @@ class GluService(object):
 
     def get_uri(self):
         """
-        Return the URI of the component.
+        Return the URI of the service.
 
-        @return     URI of the component.
+        @return     URI of the service.
         @rtype:     string
 
         """
@@ -109,7 +109,7 @@ class GluService(object):
 
     def get_all_parameters(self):
         """
-        Return all parameters defined for this component.
+        Return all parameters defined for this service.
 
         @return:    Dictionary of all parameters.
         @rtype:     dict of GluParam
@@ -119,7 +119,7 @@ class GluService(object):
 
     def get_parameter(self, name):
         """
-        Return one parameters of this component.
+        Return one parameters of this service.
 
         @param name:    Name of the parameter.
         @type name:     string
@@ -135,7 +135,7 @@ class GluService(object):
 
     def get_positional_param_names(self):
         """
-        Return list of positional parameters."
+        Return list of positional parameters.
 
         @return:        List of positional parameters.
         @rtype:         list
@@ -150,7 +150,7 @@ class GluAccessibleService(GluService):
     ready to be accessed.
 
     This representation can be used by clients to find out about
-    service capabilities and also to access the service methdods of
+    service capabilities and also to access the service methods of
     the resource.
 
     """
@@ -243,7 +243,15 @@ class GluAccessibleService(GluService):
         @rtype:         HttpResult
 
         """
-        # Assemble the request URI
+        # Check if all mandatory parameters have been set
+        all_params = self.get_all_parameters()
+        if all_params:
+            for name, pdef in all_params.items():
+                if pdef.is_required():
+                    if name not in self.__param_vals:
+                        raise GluClientException("Required parameter '%s' is missing." % name)
+
+         # Assemble the request URI
         qs = urllib.urlencode(self.__param_vals)
         uri = self.__resource.get_uri() + "/" + self.get_name() + (("?%s" % qs) if qs else "")
 
@@ -260,7 +268,7 @@ class GluAccessibleService(GluService):
             method = method.upper()
             if self.__input_buf:
                 if method not in ["POST", "PUT"]:
-                    raise GluClientExcetion("Request method must be POST or PUT, because a message body (input) was set.")
+                    raise GluClientException("Request method must be POST or PUT, because a message body (input) was set.")
             else:
                 if method not in ["GET", "HEAD", "OPTIONS", "DELETE"]:
                     if method in ["POST", "PUT"]:
