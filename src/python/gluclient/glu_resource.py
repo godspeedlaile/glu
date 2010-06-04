@@ -55,7 +55,7 @@ class GluResource(object):
             for sname, sdef in sdict.items():
                 self.__services[sname] = GluAccessibleService(self, sname, sdef)
 
-        except KeyError:
+        except KeyError, e:
             raise GluClientException("Server error: Expected key '%s' missing in definition of resource '%s'." % (str(e), self.__name))
 
     def __str__(self):

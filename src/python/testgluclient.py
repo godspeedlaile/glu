@@ -49,7 +49,7 @@ rt = component.get_resource_template()
 rt.params         = dict(api_key="bar")
 rt.description    = "Some description"
 rt.public         = False
-rt.suggested_name = "somename"
+rt.suggested_name = "somename_p"
 
 r = rt.create_resource()
 print r

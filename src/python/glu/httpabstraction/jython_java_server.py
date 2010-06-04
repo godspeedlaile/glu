@@ -15,6 +15,7 @@ from java.io                import InputStreamReader;
 from java.io                import BufferedReader
 from java.io                import DataOutputStream
 from java.lang              import Exception as JavaException
+from java.util.concurrent   import Executors;
 
 # Python imports
 import traceback
@@ -375,9 +376,8 @@ class JythonJavaHttpServer(BaseHttpServer):
         
         """
         self.request_handler = request_handler
-        self.__native_server = HttpServer.create(InetSocketAddress(port), 5);
-        self.__native_server.createContext(settings.DOCUMENT_ROOT,
-                                           __HttpHandler(request_handler));
-        self.__native_server.setExecutor(None);
-        self.__native_server.start();
+        self.__native_server = HttpServer.create(InetSocketAddress(port), 5)
+        self.__native_server.createContext(settings.DOCUMENT_ROOT, __HttpHandler(request_handler))
+        self.__native_server.setExecutor(Executors.newCachedThreadPool())
+        self.__native_server.start()
         log("Listening for HTTP requests on port %d..." % port)
