@@ -88,9 +88,6 @@ class BaseComponent(object):
     def setRequest(self, request):
         self.__http_request = request
         
-    def getDocs(self):
-        return self.DOCUMENTATION
-        
     def getRequestUri(self):
         return self.__http_request.getRequestURI()
 
@@ -135,7 +132,7 @@ class BaseComponent(object):
         """
         return self.__base_capabilities.httpSetCredentials(accountname, password)
     
-    def httpGet(self, url):
+    def httpGet(self, url, headers=None):
         """
         Accesses the specified URL.
         
@@ -145,16 +142,19 @@ class BaseComponent(object):
         @param url:        The URL to be accessed.
         @type url:         string
         
+        @param headers:    A dictionary of additional HTTP request headers.
+        @type headers:     dict
+        
         @return:           Status and data as tuple.
         @rtype:            tuple
         
         """
-        res = self.__base_capabilities.httpGet(url)
+        res = self.__base_capabilities.httpGet(url, headers=headers)
         return (res.status, res.data)
-
-    def httpPost(self, url, data):
+    
+    def httpPost(self, url, data, headers=None):
         """
-        Send the specified data to the specified URL.
+        Send the specified data to the specified URL with the POST method.
         
         If credentials have been specified, they will be used in case
         of HTTP basic authentication.
@@ -165,11 +165,14 @@ class BaseComponent(object):
         @param data:       The data to be sent to the URL.
         @type data:        string
         
+        @param headers:    A dictionary of additional HTTP request headers.
+        @type headers:     dict
+        
         @return:           Status and data as tuple.
         @rtype:            tuple
         
         """
-        res = self.__base_capabilities.httpPost(url, data)
+        res = self.__base_capabilities.httpPost(url, data, headers)
         return (res.status, res.data)
 
     def getMetaData(self):

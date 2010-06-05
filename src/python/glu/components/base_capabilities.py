@@ -87,27 +87,42 @@ class BaseCapabilities(BaseComponentCapabilities):
         self.__accountname = accountname
         self.__password    = password
     
-    def __http_access(self, url, data=None):
+    def __http_access(self, url, data=None, headers=None):
         """
         Access an HTTP resource with GET or POST.
         
-        @param url:    The URL to access.
-        @type url:     string
+        @param url:        The URL to access.
+        @type url:         string
         
-        @param data:   If present specifies the data for a POST request.
-        @type data:    Data to be sent or None.
+        @param data:       If present specifies the data for a POST request.
+        @type data:        Data to be sent or None.
         
-        @return:       Code and response data tuple.
-        @rtype:        tuple
+        @param headers:    A dictionary of additional HTTP request headers.
+        @type headers:     dict
+        
+        @return:           Code and response data tuple.
+        @rtype:            tuple
         
         """
         opener = self.__get_http_opener(url)
+        # Add any custom headers we might have (list of tuples)
+        if headers:
+            if type(headers) is not type(dict):
+                # If this was called from Java then the headers are
+                # defined in a HashMap. We need to translate that to
+                # a Python dictionary.
+                header_dict = dict()
+                header_dict.update(headers)
+                headers = header_dict
+
+            opener.addheaders.extend(headers.items())
+
         resp = opener.open(url, data)
         code = HTTP.OK
         data = resp.read()
         return code, data
         
-    def httpGet(self, url):
+    def httpGet(self, url, headers=None):
         """
         Accesses the specified URL.
         
@@ -117,16 +132,19 @@ class BaseCapabilities(BaseComponentCapabilities):
         @param url:        The URL to be accessed.
         @type url:         string
         
+        @param headers:    A dictionary of additional HTTP request headers.
+        @type headers:     dict
+        
         @return:           HttpResult object.
         @rtype:            HttpResult
         
         """
         res                  =  HttpResult()
-        res.status, res.data = self.__http_access(url)
+        res.status, res.data = self.__http_access(url, headers=headers)
         return res
 
 
-    def httpPost(self, url, data):
+    def httpPost(self, url, data, headers=None):
         """
         Send the specified data to the specified URL.
         
@@ -139,10 +157,13 @@ class BaseCapabilities(BaseComponentCapabilities):
         @param data:       The data to be sent to the URL.
         @type data:        string
         
+        @param headers:    A dictionary of additional HTTP request headers.
+        @type headers:     dict
+        
         @return:           HttpResult object.
         @rtype:            HttpResult
         
         """
         res                  =  HttpResult()
-        res.status, res.data = self.__http_access(url, data)
+        res.status, res.data = self.__http_access(url, data, headers)
         return res

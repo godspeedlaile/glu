@@ -275,9 +275,19 @@ public abstract class BaseComponent
         return baseCapabilities.httpGet(url);
     }
     
+    public HttpResult httpGet(String url, HashMap<String, String> headers)
+    {
+        return baseCapabilities.httpGet(url, headers);
+    }
+    
     public HttpResult httpPost(String url, String data)
     {
         return baseCapabilities.httpPost(url, data);
+    }
+    
+    public HttpResult httpPost(String url, String data, HashMap<String, String> headers)
+    {
+        return baseCapabilities.httpPost(url, data, headers);
     }
     
     private HashMap<String, Object> changeParamsToPlainDict(HashMap<String, ParameterDef> paramDict)
