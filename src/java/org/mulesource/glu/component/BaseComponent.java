@@ -14,6 +14,7 @@ import com.sun.net.httpserver.Headers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
@@ -22,9 +23,7 @@ import org.mulesource.glu.GluHttpRequest;
 import org.mulesource.glu.ResourceAccessorInterface;
 import org.mulesource.glu.Settings;
 import org.mulesource.glu.component.api.*;
-import org.mulesource.glu.exception.GluDuplicateKeyException;
 import org.mulesource.glu.exception.GluException;
-import org.mulesource.glu.exception.GluMalformedServiceDescriptorException;
 import org.mulesource.glu.parameter.*;
 
 public abstract class BaseComponent
@@ -46,7 +45,7 @@ public abstract class BaseComponent
     // the right order - since Java does not allow the **fkwargs notation of named
     // parameters - and also allows us to do the necessary type casting.
     private      HashMap<String, ArrayList<String>>  paramOrder;
-    private      HashMap<String, ArrayList<Class>>   paramTypes;
+    private      HashMap<String, ArrayList<Class<?>>>   paramTypes;
     
     public BaseComponent()
     {
@@ -103,17 +102,17 @@ public abstract class BaseComponent
         return accessResource(uri, input, null, HTTP.GET);
     }
 
-    public HttpResult accessResource(String uri, String input, HashMap params)
+    public HttpResult accessResource(String uri, String input, Map<?,?> params)
     {
         return accessResource(uri, input, params, HTTP.GET);
     }
     
-    public HttpResult accessResource(String uri, String input, HashMap params, HttpMethod method)
+    public HttpResult accessResource(String uri, String input, Map<?,?> params, HttpMethod method)
     {
         return resourceAccessor.accessResourceProxy(uri, input, params, method);
     }
     
-    private ParameterDef createParamDefType(Class paramType, String desc,
+    private ParameterDef createParamDefType(Class<?> paramType, String desc,
                                             boolean required, String defaultVal)
     {
         ParameterDef pdef = null;
@@ -157,7 +156,6 @@ public abstract class BaseComponent
         for (Field f: myclass.getFields()) {
             Parameter fa = f.getAnnotation(Parameter.class);
             if (fa != null) {
-                String  fieldName   = f.getName();
                 String  paramName   = fa.name();
                 String  paramDesc   = fa.desc();
                 String  defaultVal  = null;
@@ -180,7 +178,7 @@ public abstract class BaseComponent
          * and their parameters.
          */
         paramOrder = new HashMap<String, ArrayList<String>>();
-        paramTypes = new HashMap<String, ArrayList<Class>>();
+        paramTypes = new HashMap<String, ArrayList<Class<?>>>();
         for (Method m: myclass.getMethods()) {
             if (m.isAnnotationPresent(Service.class)) {
                 String            serviceName         = m.getName();
@@ -201,7 +199,7 @@ public abstract class BaseComponent
                             desc = ((Parameter)a).desc();
                             if (!paramOrder.containsKey(serviceName)) {
                                 paramOrder.put(serviceName, new ArrayList<String>());
-                                paramTypes.put(serviceName, new ArrayList<Class>());
+                                paramTypes.put(serviceName, new ArrayList<Class<?>>());
                             }
                             if (((Parameter)a).positional()) {
                                 positionalParams.add(name);
@@ -215,7 +213,6 @@ public abstract class BaseComponent
                         }
                     }
                     if (name != null) {                     
-                        ParameterDef pdef = null;
                         sd.addParameter(name, createParamDefType(types[i], desc, required, defaultVal));
                     }
                     ++i;
@@ -237,7 +234,7 @@ public abstract class BaseComponent
         return paramOrder;
     }
     
-    public HashMap<String, ArrayList<Class>> getParameterTypes() throws GluException
+    public HashMap<String, ArrayList<Class<?>>> getParameterTypes() throws GluException
     {
         annotationParser();
 
@@ -285,12 +282,12 @@ public abstract class BaseComponent
         return baseCapabilities.httpPost(url, data);
     }
     
-    public HttpResult httpPost(String url, String data, HashMap<String, String> headers)
+    public HttpResult httpPost(String url, String data, Map<String, String> headers)
     {
         return baseCapabilities.httpPost(url, data, headers);
     }
     
-    private HashMap<String, Object> changeParamsToPlainDict(HashMap<String, ParameterDef> paramDict)
+    private HashMap<String, Object> changeParamsToPlainDict(Map<String, ParameterDef> paramDict)
     {
         HashMap<String, Object> d = new HashMap<String, Object>();
         for (String name: paramDict.keySet()) {

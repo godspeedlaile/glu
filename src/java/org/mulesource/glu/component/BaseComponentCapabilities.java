@@ -10,7 +10,7 @@
 
 package org.mulesource.glu.component;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.mulesource.glu.component.api.FileStore;
 import org.mulesource.glu.component.api.HttpResult;
@@ -27,9 +27,9 @@ public abstract class BaseComponentCapabilities
     // HTTP accesses
     public abstract void       httpSetCredentials(String accountName, String password);
     public abstract HttpResult httpGet(String url);
-    public abstract HttpResult httpGet(String url, HashMap<String, String> headers);
+    public abstract HttpResult httpGet(String url, Map<String, String> headers);
     public abstract HttpResult httpPost(String url, String data);
-    public abstract HttpResult httpPost(String url, String data, HashMap<String, String> headers);
+    public abstract HttpResult httpPost(String url, String data, Map<String, String> headers);
 }
 
 

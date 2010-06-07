@@ -10,14 +10,14 @@
 
 package org.mulesource.glu;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.mulesource.glu.component.api.HttpMethod;
 import org.mulesource.glu.component.api.HttpResult;
 
 public interface ResourceAccessorInterface
 {
-    public HttpResult accessResourceProxy(String uri, String input, HashMap params, HttpMethod method);
+    public HttpResult accessResourceProxy(String uri, String input, Map<?,?> params, HttpMethod method);
 }
 
 
