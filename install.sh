@@ -107,14 +107,6 @@ echo -e "\n=== Welcome to the Glu installer.\n=== (c) 2010 MuleSoft.
 # this run.
 echo -e "#!/bin/bash\n\n# Auto generated during install...\n\n" > $ENVIRON_TMP_FILE
 
-# Check whether a $JAVA_HOME variable is set. We really need that
-# one set up correctly and can't proceed without it.
-if [ -z "$JAVA_HOME" ]; then
-    error_report 'No $JAVA_HOME variable was set. Please set $JAVA_HOME and try again...'
-    exit 1
-fi
-echo 'JAVA_HOME='$JAVA_HOME >> $ENVIRON_TMP_FILE
-
 # Check whether a proper JVM is installed.
 exec_test "java" "Please install a JAVA SDK (at least version 1.6) and make it available in the path."
 JAVA_EXECUTABLE=$EXEC_PATH
