@@ -2,7 +2,7 @@
 
 # Installer for Glu
 
-JYTHON_DOWNLOAD_LOCATION="http://sourceforge.net/projects/jython/files/jython/jython_installer-2.5.1.jar"
+JYTHON_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/project/jython/jython/2.5.1/jython_installer-2.5.1.jar"
 JYTHON_DOWNLOAD_FILE="jython_installer.jar"
 DEFAULT_INSTALL_DIR="`pwd`/jython"
 ENVIRON_TMP_FILE="__glustart_tmp"
@@ -137,12 +137,35 @@ case "`java -version 2>&1`" in
 esac 
 
 # Check for Jython install
-exec_test "jython" "Jython 2.5.1 needs to be installed.\nWould you like me to install it for you now?
-                    If not then you will have to install it manually." "y"
+JYTHON_HOME=
+install_needed=0
+exec_test "jjython" "Jython 2.5.1 could not be found." "y"
 if [ $? == 1 ]; then
+    #
+    # Jython was not found. Does it exist already on the system?
+    #
+    while [ 1 ] ; do
+        read -p "Do you have Jython installed already? (y/n): " ui
+        if [ ! -z $ui ]; then
+            if [ $ui == "y" ]; then
+                read -p "Please specify the Jython install directory: " install_dir
+                JYTHON_HOME="`cd $install_dir; pwd`"
+                exec_test "$JYTHON_HOME/jython" "The specified Jython directory does not contain a jython executable."
+                break
+            elif [ $ui == "n" ]; then
+                install_needed=1
+                break
+            fi
+        fi
+    done
+fi
+
+if [ $install_needed == 1 ]; then
     #
     # Jython was not found. Does the user want us to install Jython manually?
     #
+    echo -e "Jython 2.5.1 needs to be installed. Would you like me to install it for you now?
+If not then you will have to install it manually."
     read -p "Attempt automatic install of Jython? (Y/n): " ui
     if [ -z $ui ]; then
         ui="y"
