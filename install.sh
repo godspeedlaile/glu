@@ -10,8 +10,9 @@ CTL_SCRIPT_BODY="bin/frags/_ctl_frg"
 CTL_SCRIPT="gluctl"
 COMPILE_SCRIPT_BODY="bin/frags/_compile_frg"
 COMPILE_SCRIPT="glucompile"
-COMPILE_SCRIPT_DIR="bin"
+GLU_BIN_DIR="bin"
 PID_FILE="glu.pid"
+START_STOP_SCRIPT_NAME="glu_start_stop_daemon"
 
 # ---------------------------------------------
 # Helper functions
@@ -304,7 +305,7 @@ if [ -z $CLASSPATH ]; then
 else
     CLASSPATH="$CLASSPATH:$JYTHON_JAR:$GLU_HOME/src/java"
 fi
-echo 'CLASSPATH='$CLASSPATH >> $ENVIRON_TMP_FILE
+echo 'export CLASSPATH='$CLASSPATH >> $ENVIRON_TMP_FILE
 
 #
 # Setting the $VERSION variable
@@ -315,7 +316,7 @@ echo 'VERSION='$VERSION >> $ENVIRON_TMP_FILE
 #
 # Setting variables for the correct script names
 #
-echo 'COMPILE_SCRIPT='$GLU_HOME/$COMPILE_SCRIPT_DIR/$COMPILE_SCRIPT >> $ENVIRON_TMP_FILE
+echo 'COMPILE_SCRIPT='$GLU_HOME/$GLU_BIN_DIR/$COMPILE_SCRIPT >> $ENVIRON_TMP_FILE
 echo 'COMPILE_SCRIPT_NAME='$COMPILE_SCRIPT >> $ENVIRON_TMP_FILE
 echo 'CTL_SCRIPT_NAME='$CTL_SCRIPT >> $ENVIRON_TMP_FILE
 echo 'PID_FILE='$GLU_HOME/$PID_FILE >> $ENVIRON_TMP_FILE
@@ -340,14 +341,15 @@ fi
 # accumulated so far.
 #
 script_combiner $ENVIRON_TMP_FILE  $GLU_HOME/bin/frags/_ctl_frg        $GLU_HOME/$CTL_SCRIPT 
-script_combiner $ENVIRON_TMP_FILE  $GLU_HOME/bin/frags/_compile_frg    $GLU_HOME/$COMPILE_SCRIPT_DIR/$COMPILE_SCRIPT
+script_combiner $ENVIRON_TMP_FILE  $GLU_HOME/bin/frags/_compile_frg    $GLU_HOME/$GLU_BIN_DIR/$COMPILE_SCRIPT
+script_combiner $ENVIRON_TMP_FILE  $GLU_HOME/bin/frags/_start_stop_frg $GLU_HOME/$GLU_BIN_DIR/$START_STOP_SCRIPT_NAME
 
 rm $ENVIRON_TMP_FILE
 
 #
 # Compiling all Java sources
 #
-$GLU_HOME/$COMPILE_SCRIPT_DIR/$COMPILE_SCRIPT all
+$GLU_HOME/$GLU_BIN_DIR/$COMPILE_SCRIPT all
 if [ ?$ == 1 ]; then
     error_report "Compilation failed. Cannot continue..."
     exit 1
