@@ -21,12 +21,16 @@ LOG_CRITICAL    = "CRITICAL"
 LOGF_GLU_CORE   = "GLU_CORE"
 LOGF_ACCESS_LOG = "ACCESS_LOG"
 LOGF_RESOURCES  = "RESOURCES"
-LOGF_COMPONENTS      = "COMPONENTS"
+LOGF_COMPONENTS = "COMPONENTS"
 
 __KNOWN_LEVELS     = [ LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR, LOG_CRITICAL ]
 __KNOWN_FACILITIES = [ LOGF_GLU_CORE, LOGF_ACCESS_LOG, LOGF_RESOURCES, LOGF_COMPONENTS ]
 
+_LOGFILE=None
 
+def set_logfile(logfile=None):
+    global _LOGFILE
+    _LOGFILE=logfile
 
 def log(msg, level=LOG_INFO, facility=LOGF_GLU_CORE, start_time=None):
     """
@@ -56,5 +60,12 @@ def log(msg, level=LOG_INFO, facility=LOGF_GLU_CORE, start_time=None):
         facility_level = LOGF_ACCESS_LOG
     else:
         facility_level = "%s:%s" % (facility, level)
-    sys.stderr.write("### %s - %s - %s\n" % (timestring, facility_level, msg))
+    outstr = "### %s - %s - %s\n" % (timestring, facility_level, msg)
+    if not _LOGFILE:
+        sys.stderr.write(outstr)
+    else:
+        f = open(_LOGFILE, "a+")
+        f.write(outstr)
+        f.close()
+
 
