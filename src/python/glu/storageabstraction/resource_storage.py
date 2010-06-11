@@ -10,19 +10,9 @@ from org.mulesource.glu.exception        import *
 
 class ResourceStorage(FileStorage):
     """
-    Abstract implementation of the base storage methods.
+    Implementation of resource storage methods.
 
     """
-    '''
-    def __init__(self, storage_location, unique_prefix=""):
-        """
-        The unique prefix is used to create a namespace in a flat bucket.
-
-        """
-        self.storage_location = storage_location
-        self.unique_prefix    = unique_prefix
-    '''
-
 
     def loadResourceFromStorage(self, resource_name):
         """

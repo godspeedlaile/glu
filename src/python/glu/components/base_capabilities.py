@@ -48,7 +48,7 @@ class BaseCapabilities(BaseComponentCapabilities):
                 unique_namespace = "%s__%s" % (self.__my_component.getMyResourceName(), namespace)
             else:
                 unique_namespace = self.__my_component.getMyResourceName()
-            storage = FileStorage(storage_location=settings.STOAGEDB_LOCATION, unique_prefix=unique_namespace)
+            storage = FileStorage(storage_location=settings.STORAGEDB_LOCATION, unique_prefix=unique_namespace)
             return storage
         else:
             # Cannot get storage object when I am not running as a resource

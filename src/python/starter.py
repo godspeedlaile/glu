@@ -48,7 +48,7 @@ Options:
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hl:P:p:", ["help", "logfile=", "port=", "pidfile="])
+        opts, args = getopt.getopt(sys.argv[1:], "hl:P:p:r:", ["help", "logfile=", "port=", "pidfile=", "rootdir="])
     except getopt.GetoptError, err:
         # print help information and exit:
         print str(err) # will print something like "option -a not recognized"
@@ -68,6 +68,9 @@ if __name__ == '__main__':
             sys.exit(0)
         elif o in ("-P", "--port"):
             port = int(a)
+        elif o in ("-r", "--rootdir"):
+            rootdir = str(a)
+            settings.set_root_dir(rootdir)
         elif o in ("-l", "--logfile"):
             logger.set_logfile(a)
             

@@ -12,9 +12,19 @@ PREFIX_STATIC   = "/static"
 
 LISTEN_PORT     = 8001
 
-STATIC_LOCATION     = "../../static_files/"
-RESOURCEDB_LOCATION = "../../resourceDB/"
-STOAGEDB_LOCATION   = "../../storageDB/"
+STATIC_LOCATION     = "static_files/"
+RESOURCEDB_LOCATION = "resourceDB/"
+STORAGEDB_LOCATION  = "storageDB/"
+ROOT_DIR            = None
+
+def set_root_dir(rootdir):
+    global ROOT_DIR
+    if not rootdir.endswith("/"):
+        rootdir += "/"
+    ROOT_DIR = rootdir
+
+def get_root_dir():
+    return ROOT_DIR
 
 NEVER_HUMAN   = False
 

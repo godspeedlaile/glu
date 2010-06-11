@@ -7,6 +7,7 @@ Base class from which all storage abstractions derive.
 import os
 
 # Glu imports
+import glu.settings as settings
 from org.mulesource.glu.exception     import *
 from org.mulesource.glu.component.api import FileStore
 
@@ -23,11 +24,14 @@ class FileStorage(FileStore):
         self.storage_location = storage_location
         self.unique_prefix    = unique_prefix
 
+    def _get_storage_location(self):
+        return settings.get_root_dir()+self.storage_location
+
     def __make_filename(self, file_name):
         if self.unique_prefix:
-            name = "%s/%s__%s" % (self.storage_location, self.unique_prefix, file_name)
+            name = "%s/%s__%s" % (self._get_storage_location(), self.unique_prefix, file_name)
         else:
-            name = "%s/%s" % (self.storage_location, file_name)
+            name = "%s/%s" % (self._get_storage_location(), file_name)
         return name
 
     def __remove_filename_prefix(self, file_name):
@@ -99,7 +103,7 @@ class FileStorage(FileStore):
 
         """
         try:
-            dir_list = os.listdir(self.storage_location)
+            dir_list = os.listdir(self._get_storage_location())
             # Need to filter all those out, which are not part of our storage space
             if self.unique_prefix:
                 our_files = [ name for name in dir_list if name.startswith(self.unique_prefix) ]
