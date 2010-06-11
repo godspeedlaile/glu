@@ -8,6 +8,8 @@
 # component templates for the various languages.
 #
 
+LANGUAGES=
+
 function glu_help
 {
     echo -e "
@@ -104,10 +106,35 @@ function compile_components
     exit $?
 }
 
+function print_known_languages
+{
+    curdir=`pwd`
+    cd $GLU_HOME/languages
+    find * -maxdepth 0 -type d
+    cd $curdir
+}
+
 function create_component
 {
-    echo "Params: $1"
-    echo "Params: $2"
+    name="$1"
+    language="$2"
+
+    # Check that we have all the parameters we need
+    if [ -z $name  -o  -z $language ]; then
+        echo "When creating a component, you need to specify a name and a target language."
+        exit 1
+    fi
+
+    # Check whether we know the language
+    if [ ! -d "$GLU_HOME/languages/$language" ]; then
+        echo "Glu does not know the specified language '$language'. Only these languages are known:"
+        print_known_languages
+        exit 1
+    fi
+
+    # Call the language specific placement script
+    $GLU_HOME/languages/$language/util/placement $1 $GLU_HOME
+    exit $?
 }
 
 

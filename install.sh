@@ -132,20 +132,20 @@ esac
 # Check for Jython install
 JYTHON_HOME=
 install_needed=0
-exec_test "jjython" "Jython 2.5.1 could not be found." "y"
+exec_test "jython" "Jython 2.5.1 could not be found." "y"
 if [ $? == 1 ]; then
     #
     # Jython was not found. Does it exist already on the system?
     #
     while [ 1 ] ; do
         read -p "Do you have Jython installed already? (y/n): " ui
-        if [ ! -z $ui ]; then
-            if [ $ui == "y" ]; then
+        if [ ! -z "$ui" ]; then
+            if [ "$ui" == "y" ]; then
                 read -p "Please specify the Jython install directory: " install_dir
                 JYTHON_HOME="`cd $install_dir; pwd`"
                 exec_test "$JYTHON_HOME/jython" "The specified Jython directory does not contain a jython executable."
                 break
-            elif [ $ui == "n" ]; then
+            elif [ "$ui" == "n" ]; then
                 install_needed=1
                 break
             fi
@@ -160,10 +160,10 @@ if [ $install_needed == 1 ]; then
     echo -e "Jython 2.5.1 needs to be installed. Would you like me to install it for you now?
 If not then you will have to install it manually."
     read -p "Attempt automatic install of Jython? (Y/n): " ui
-    if [ -z $ui ]; then
+    if [ -z "$ui" ]; then
         ui="y"
     fi
-    if [ $ui == "n" ]; then
+    if [ "$ui" == "n" ]; then
         error_report "No Jython install is available. Please install Jython manually and then try again.\nBye for now..."
         exit 1
     else
@@ -183,26 +183,26 @@ If not then you will have to install it manually."
         while [ $retry_flag == 1 ]; do
             read -p "Enter install directory or press enter to accept default ($DEFAULT_INSTALL_DIR): " install_dir
             if [ -z "$install_dir" ]; then
-                install_dir=$DEFAULT_INSTALL_DIR
+                install_dir="$DEFAULT_INSTALL_DIR"
             fi
             echo "Chosen install dir: " $install_dir
-            if [ -f $install_dir ]; then
+            if [ -f "$install_dir" ]; then
                 read -p "This is not a directory, but an ordinary file. Can I erase the file and create the directory (y/N) ? " choice
-                if [ ! -z $choice ]; then
-                    if [ $choice == "y" ]; then
-                        rm $install_dir
+                if [ ! -z "$choice" ]; then
+                    if [ "$choice" == "y" ]; then
+                        rm "$install_dir"
                         retry_flag=0
                     fi
                 fi
-            elif [ -d $install_dir ]; then
+            elif [ -d "$install_dir" ]; then
                 read -p "The chosen install directory exists already. Can I erase and re-create the directory (y/N) ? " choice
-                if [ ! -z $choice ]; then
-                    if [ $choice == "y" ]; then
+                if [ ! -z "$choice" ]; then
+                    if [ "$choice" == "y" ]; then
                         rm -rf $install_dir
                         retry_flag=0
                     fi
                 fi
-            elif [ -e $install_dir ]; then
+            elif [ -e "$install_dir" ]; then
                 echo "Cannot create directory at that location. Please specify an alternative..."
             else
                 retry_flag=0
@@ -231,13 +231,13 @@ fi
 #
 # Sanity checking the Jython home directory
 #
-JYTHON_EXECUTABLE=$JYTHON_HOME/jython
-JYTHON_JAR=$JYTHON_HOME/jython.jar
-if [ ! -f $JYTHON_EXECUTABLE ]; then
-    error_report "Jython install does not appear to be successful. Cannot find '$JYTHON_EXECUTABLE'."
+JYTHON_EXECUTABLE="$JYTHON_HOME/jython"
+JYTHON_JAR="$JYTHON_HOME/jython.jar"
+if [ ! -f "$JYTHON_EXECUTABLE" ]; then
+    error_report "Jython install does not appear to be successful. Cannot find '"$JYTHON_EXECUTABLE"'."
     exit 1
 fi
-if [ ! -f $JYTHON_JAR ]; then
+if [ ! -f "$JYTHON_JAR" ]; then
     error_report "Jython install does not appear to be successful. Cannot find '$JYTHON_JAR'."
     exit 1
 fi
@@ -258,19 +258,19 @@ echo 'JYTHON_JAR='$JYTHON_JAR >> $ENVIRON_TMP_FILE
 # Check whether we have simplejson available.
 #
 echo "Test if 'simplejson' is available to jython. Please wait..."
-SIMPLEJSON_TEST=`$JYTHON_EXECUTABLE -c "import simplejson" 2>&1`
+SIMPLEJSON_TEST="`$JYTHON_EXECUTABLE -c "import simplejson" 2>&1`"
 if [ $? == 1 ]; then
     echo "Could not find 'simplejson'. Installing now..."
     #
     # Looks like simplejson is not installed. Is 'easy_install'
     # available to us?
     #
-    EASY_INSTALL=$JYTHON_HOME/bin/easy_install
-    if [ ! -x $EASY_INSTALL ]; then
+    EASY_INSTALL="$JYTHON_HOME/bin/easy_install"
+    if [ ! -x "$EASY_INSTALL" ]; then
         # Need to install easy-install first.
         echo -e "\nFirst I need to install easy_install. Please wait..."
-        $JYTHON_EXECUTABLE tools/ez_setup.py
-        if [ -x $EASY_INSTALL ]; then
+        "$JYTHON_EXECUTABLE" tools/ez_setup.py
+        if [ -x "$EASY_INSTALL" ]; then
             echo "easy_install was installed successfully in" $EASY_INSTALL
         else
             error_report "Attempt to install easy_installed failed. Cannot continue..."
@@ -281,8 +281,8 @@ if [ $? == 1 ]; then
     # Now we can install simplejson
     #
     echo "Installing simplejson for jython. Please wait..."
-    $EASY_INSTALL simplejson
-    SIMPLEJSON_TEST=`$JYTHON_EXECUTABLE -c "import simplejson" 2>&1`
+    "$EASY_INSTALL" simplejson
+    SIMPLEJSON_TEST="`$JYTHON_EXECUTABLE -c "import simplejson" 2>&1`"
     if [ $? == 1 ]; then
         error_report "Install of simplejson failed. Cannot continue..."
         exit 1

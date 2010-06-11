@@ -1,0 +1,100 @@
+#!/bin/bash
+
+#
+# A language agnostic script, which gets the proper information
+# from the language specific script to create a new component
+# template.
+#
+# $1: name of the component ("TestComponent")
+# $2: $GLU_HOME directory
+# $3: the language ("java", "python", etc.)
+# $4: extension of for the language (".java", ".py", etc.)
+# $5: source directory of template
+# $6: $GLU_SRC directory (development directory for that language)
+# $7: name of the sample component (usually 'SampleComponent')
+#
+
+name="$1"
+GLU_HOME="$2"
+LANGUAGE="$3"
+LANGUAGE_ENDING="$4"
+LANGUAGES_SRC="$5"
+GLU_SRC="$6"
+SAMPLE_COMPONENT_NAME="$7"
+
+SAMPLE_COMPONENT="$SAMPLE_COMPONENT_NAME""$LANGUAGE_ENDING"
+
+#
+# This is the generic version of the placement script
+#
+
+echo
+echo "=== Creating a new $LANGUAGE component template. Name: ""$name"
+echo
+
+#
+# Find the full path for where the SampleComponent lives
+#
+fullpath="`cd $LANGUAGES_SRC; find * -name $SAMPLE_COMPONENT`"
+
+#
+# The directory in which the new component should be stored
+#
+newpath="$GLU_SRC/`dirname $fullpath`"
+
+#
+# Check for proper capitalization of the name
+#
+if [[ ! "${name:0:1}" =~ [A-Z] ]]; then
+    read -p "Usually, $LANGUAGE class names start with a capital letter. Are you sure you want a lower-case name? (y/n): " ui
+    if [ "$ui" == "n" ]; then
+        echo "Please try again with a new component name."
+        echo
+        exit 1
+    fi
+fi
+
+#
+# Check whether the language specific ending was specified already.
+#
+if [[ "$name" == $LANGUAGE_ENDING ]]; then
+    # Name already ends with language specific extension so don't need to append that
+    filename="$name"
+else
+    # Name does not end with language specific extension, so we add that
+    filename="$name"$LANGUAGE_ENDING
+fi
+newfile="$newpath/$filename"
+
+#
+# Check whether a component with that name exists already
+#
+if [ -f "$newfile" ]; then
+    echo "A component with that name already exists in the development directory: $newfile"
+    echo
+    exit 1
+fi
+
+#
+# Copy the sample component in the right place
+#
+
+cp "$LANGUAGES_SRC/$fullpath" "$newfile"
+if [ $? == 1 ]; then
+    echo "Cannot copy sample component to $newfile..."
+    echo
+    exit 1
+fi
+
+#
+# Change the name in the file
+#
+sed -i s/$SAMPLE_COMPONENT_NAME/$name/ $newfile
+if [ $? == 1 ]; then
+    echo "Failed to modify name new component template to $name"
+    echo
+    exit 1
+fi
+
+echo -e "Created new component: $newfile\n"
+

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#
+# Puts the sample component into the development directory.
+#
+# $1 is the name of the component.
+# $2 is the $GLU_HOME directory
+#
+
+#
+# This is the Python version of the placement script
+#
+
+name="$1"
+GLU_HOME="$2"
+
+LANGUAGE="Python"
+LANGUAGE_ENDING=".py"
+LANGUAGES_SRC="$GLU_HOME/languages/python/src"
+GLU_SRC="$GLU_HOME/src/python"
+SAMPLE_COMPONENT_NAME="SampleComponent"
+
+"$GLU_HOME"/bin/generic_placement "$name" "$GLU_HOME" "$LANGUAGE" "$LANGUAGE_ENDING" "$LANGUAGES_SRC" "$GLU_SRC" "$SAMPLE_COMPONENT_NAME"
+
