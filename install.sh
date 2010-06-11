@@ -130,7 +130,6 @@ case "`java -version 2>&1`" in
 esac 
 
 # Check for Jython install
-JYTHON_HOME=
 install_needed=0
 exec_test "jython" "Jython 2.5.1 could not be found." "y"
 if [ $? == 1 ]; then
@@ -365,6 +364,7 @@ echo -e "it to start, stop and restart the Glu server:\n"
 echo "   % $CTL_SCRIPT start            # Start the glu server"
 echo "   % $CTL_SCRIPT stop             # Stop a running Glu server"
 echo "   % $CTL_SCRIPT restart          # Stops and restarts a Glu server"
+echo "   % $CTL_SCRIPT component ...    # Allows you to create and work with components"
 echo -e "\nThank you for installing Glu.\n"
 exit 0
 
