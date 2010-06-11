@@ -23,6 +23,9 @@ class SampleComponent(BaseComponent):
     DOCUMENTATION    = "Longer description text possibly multiple lines."
 
     # Resource creation time parameters.
+    # Each parameter is created through a ParameterDef object, which encapsulates
+    # the definition of the parameter. The PARAM_* argument determines the type
+    # of the parameter. Currently, we know PARAM_STRING, PARAM_NUMBER and PARAM_BOOL.
     PARAM_DEFINITION = {
                            # With 'required' flag set, this parameter is mandatory. No default
                            # value needs to be specified.
@@ -49,7 +52,7 @@ class SampleComponent(BaseComponent):
                                    # service method.
                                    "text" : ParameterDef(PARAM_STRING, "This is a text parameter",
                                                          required=True),   # is required, so no default needed
-                                   "num"  : ParameterDef(PARAM_NUMBER, "A numerical parameter",
+                                   "num"  : ParameterDef(PARAM_NUMBER, "A numeric parameter",
                                                          required=False,   # not required, so a default is needed
                                                          default=10)
                                },

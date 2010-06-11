@@ -36,11 +36,14 @@ public class SampleComponent extends BaseComponent
     // ---------------------------------
     // Resource creation time parameters
     // ---------------------------------
+    // Currently, only the following types are supported for parameters:
+    // String, Boolean, Number
+
     @Parameter(name="someParameter", desc="Short description of this parameter")
-    public String someParameter;    // without default, parameter is mandatory
+    public String someParameter;    // without default: parameter is mandatory
     
     @Parameter(name="anotherParameter", desc="Short description of this parameter")
-    @Default("123.4")               // default value (as string representation) is specified, parameter is optional
+    @Default("123.4")               // default value (as string representation) is specified: parameter is optional
     public BigDecimal anotherParameter;
     
     // ---------------
@@ -58,7 +61,7 @@ public class SampleComponent extends BaseComponent
                          // This defines an optional, positional parameter. Note that positional
                          // parameters may either be set with query-type arguments on the URI
                          // command line, or as path elements in the URI.
-                         @Parameter(name="num", desc="A numerical parameter", positional=true)
+                         @Parameter(name="num", desc="A numeric parameter", positional=true)
                          @Default("10")
                          BigDecimal num)
     {
