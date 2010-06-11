@@ -8,6 +8,7 @@
 # component templates for the various languages.
 #
 
+COMPONENT_LIST="src/python/glu_components_list/__init__.py"
 LANGUAGES=
 
 function glu_help
