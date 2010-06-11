@@ -13,6 +13,7 @@
 
 name="$1"
 GLU_HOME="$2"
+COMPONENT_LIST="$3"
 
 LANGUAGE="Python"
 LANGUAGE_ENDING=".py"
@@ -20,5 +21,8 @@ LANGUAGES_SRC="$GLU_HOME/languages/python/src"
 GLU_SRC="$GLU_HOME/src/python"
 SAMPLE_COMPONENT_NAME="SampleComponent"
 
-"$GLU_HOME"/bin/generic_placement "$name" "$GLU_HOME" "$LANGUAGE" "$LANGUAGE_ENDING" "$LANGUAGES_SRC" "$GLU_SRC" "$SAMPLE_COMPONENT_NAME"
+# We need to pass a module-name suffix to the generic script (9th parameter).
+# This is necessary, because the import statement for Python requires us to
+# add the filename to the module name.
+"$GLU_HOME"/bin/generic_placement "$name" "$GLU_HOME" "$LANGUAGE" "$LANGUAGE_ENDING" "$LANGUAGES_SRC" "$GLU_SRC" "$SAMPLE_COMPONENT_NAME" "$COMPONENT_LIST" ".""$name" 0
 

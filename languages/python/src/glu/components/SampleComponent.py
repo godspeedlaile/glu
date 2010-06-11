@@ -27,7 +27,7 @@ class SampleComponent(BaseComponent):
                            # With 'required' flag set, this parameter is mandatory. No default
                            # value needs to be specified.
                            "some_parameter" :    ParameterDef(PARAM_STRING, "Short description of this parameter",
-                                                              required=True)
+                                                              required=True),
                            # With 'required' flag not set, the parameter is optional. A default value
                            # must then be provided.
                            "another_parameter" : ParameterDef(PARAM_NUMBER, "Short description of this parameter",

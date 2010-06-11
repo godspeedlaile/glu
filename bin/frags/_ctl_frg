@@ -62,7 +62,7 @@ function start_glu
     done
 
     cd $GLU_HOME/src/python
-    $START_STOP_DAEMON --start $in_background --pidfile $PID_FILE --startas $JYTHON_EXECUTABLE -- $GLU_HOME/src/python/starter.py --pidfile $PID_FILE $logfile
+    $START_STOP_DAEMON --start $in_background --pidfile $PID_FILE --startas $JYTHON_EXECUTABLE -- $GLU_HOME/src/python/starter.py --pidfile $PID_FILE $logfile --rootdir $GLU_HOME
     if [ $? == 0 ]; then
         sleep 4
     else
@@ -132,8 +132,15 @@ function create_component
         exit 1
     fi
 
+    # Check if we have a component with the suggested name already
+    chk=`grep " import $name#" "$GLU_HOME"/"$COMPONENT_LIST"`
+    if [ ! -z "$chk" ]; then
+        echo "A component with name '$name' exists already."
+        exit 1
+    fi
+
     # Call the language specific placement script
-    $GLU_HOME/languages/$language/util/placement $1 $GLU_HOME
+    $GLU_HOME/languages/$language/util/placement $1 $GLU_HOME "$COMPONENT_LIST"
     exit $?
 }
 

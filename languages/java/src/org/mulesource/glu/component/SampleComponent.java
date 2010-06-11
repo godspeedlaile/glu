@@ -14,6 +14,8 @@
 
 package org.mulesource.glu.component;
 
+import java.math.BigDecimal;                 // Default type for numeric values
+
 import org.mulesource.glu.component.api.*;   // Imports all aspects of the API
 
 //
@@ -91,7 +93,9 @@ public class SampleComponent extends BaseComponent
         // of any of these types, including further HashMaps or ArrayLists. Thus,
         // it is possible to assemble lists or complex, hiearchical data structures
         // as return values.
-        
+
+        String data = "Some return value";
+
         return Result.ok(data);
     }
 }

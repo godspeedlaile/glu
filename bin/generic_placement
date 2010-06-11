@@ -5,13 +5,16 @@
 # from the language specific script to create a new component
 # template.
 #
-# $1: name of the component ("TestComponent")
-# $2: $GLU_HOME directory
-# $3: the language ("java", "python", etc.)
-# $4: extension of for the language (".java", ".py", etc.)
-# $5: source directory of template
-# $6: $GLU_SRC directory (development directory for that language)
-# $7: name of the sample component (usually 'SampleComponent')
+# $1:  name of the component ("TestComponent")
+# $2:  $GLU_HOME directory
+# $3:  the language ("java", "python", etc.)
+# $4:  extension of for the language (".java", ".py", etc.)
+# $5:  source directory of template
+# $6:  $GLU_SRC directory (development directory for that language)
+# $7:  name of the sample component (usually 'SampleComponent')
+# $8:  location of the __init__.py script where the component import needs to be added
+# $9:  potential suffix to the module name for import
+# $10: flag indicating whether this language requires compilation or not
 #
 
 name="$1"
@@ -21,6 +24,9 @@ LANGUAGE_ENDING="$4"
 LANGUAGES_SRC="$5"
 GLU_SRC="$6"
 SAMPLE_COMPONENT_NAME="$7"
+COMPONENT_LIST="$8"
+MODULE_NAME_SUFFIX="$9"
+COMPILATION_NEEDED="${10}"
 
 SAMPLE_COMPONENT="$SAMPLE_COMPONENT_NAME""$LANGUAGE_ENDING"
 
@@ -40,7 +46,13 @@ fullpath="`cd $LANGUAGES_SRC; find * -name $SAMPLE_COMPONENT`"
 #
 # The directory in which the new component should be stored
 #
-newpath="$GLU_SRC/`dirname $fullpath`"
+modulename=`dirname $fullpath`
+newpath="$GLU_SRC/$modulename"
+
+modulename=`echo $modulename | sed 's/\//\./g'`
+if [ ! -z "$MODULE_NAME_SUFFIX"  -a  "$MODULE_NAME_SUFFIX" != "-" ]; then
+    modulename=$modulename"$MODULE_NAME_SUFFIX"
+fi
 
 #
 # Check for proper capitalization of the name
@@ -96,5 +108,18 @@ if [ $? == 1 ]; then
     exit 1
 fi
 
+#
+# Add an import statement to the components-list Python file
+#
+echo "from $modulename import $name#$LANGUAGE" >> $GLU_HOME/$COMPONENT_LIST
+
 echo -e "Created new component: $newfile\n"
+
+if [ "$COMPILATION_NEEDED" == "0" ]; then
+    echo -e "A server restart is required to enable the component: gluctl restart\n"
+else
+    echo "To enable the component in your server:"
+    echo "    Compile your component:  gluctl component compile"
+    echo -e "    Then restart the server: gluctl restart\n"
+fi
 
