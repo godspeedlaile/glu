@@ -3,8 +3,11 @@
 Definition of the GluServer class.
 
 """
+try:
+    import json
+except:
+    import simplejson as json
 
-import json
 import httplib
 import urlparse
 
@@ -95,8 +98,10 @@ class GluServer(object):
 
         self.__server_conn.request(method, url, body=data, headers=headers)
         r = self.__server_conn.getresponse()
+
         if status is not None:
             if status != r.status:
+                r.read()    # Empty the input stream (if we don't do that the next request will be confused)
                 raise GluClientException("Status code %s was expected for request to '%s'. Instead we received %s." % (status, url, r.status))
         return r.status, r.read()
 
