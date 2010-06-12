@@ -32,32 +32,25 @@ def __javaStructToPython(hm):
     Convert a Java HashMap and ArrayList based structure to a Python dictionary or list.
     
     Sadly, this is not done automatically. So, we recursively
-    iterate over the hash map and convert using the 'update' method
-    of dictionaries. Unfortunately, 'update' only works on the same
-    level and doesn't do the conversion recursively.
+    iterate over everything. Even the Java numeric types are
+    coerced to a Python numeric type, so that JSON does not
+    start to export them as strings.
     
     """
     if type(hm) is HashMap:
         d2 = dict()
-        d2.update(hm)
-        for key, val in d2.items():
-            if type(val) in [ HashMap, ArrayList ]:
-                d2[key] = __javaStructToPython(val)
-            else:
-                # If it's one of those Java numeric types then we need to
-                # forcefully convert it to a Python numeric type, since
-                # otherwise JSON gets confused and exports the value as
-                # a string.
-                if type(val) in [ Integer, Float, BigDecimal ]:
-                    d2[key] = float(val.toString())
-
+        for key in hm.keySet():
+            val = hm.get(key)
+            d2[key] = __javaStructToPython(val)
     elif type(hm) is ArrayList:
         d2 = list()
         for val in hm:
-            if type(val) in [ HashMap, ArrayList ]:
-                d2.append(__javaStructToPython(val))
-            else:
-                d2.append(val)
+            d2.append(__javaStructToPython(val))
+    elif type(hm) in [ Integer, Float, BigDecimal ]:
+        # Numeric Java types need to be forcefully
+        # converted to Python numeric types so that
+        # JSON does not get confused.
+        return float(hm.toString())
     else:
         return hm
             
