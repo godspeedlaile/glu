@@ -22,7 +22,8 @@ from org.mulesource.glu.component.api import HTTP, HttpMethod, Result
 
 if PLATFORM == PLATFORM_JYTHON:
     import java.lang.Exception
-    from java.lang import String
+    from java.lang import String, Integer, Float
+    from java.math import BigDecimal
     from java.util import HashMap, ArrayList
 
 
@@ -42,6 +43,13 @@ def __javaStructToPython(hm):
         for key, val in d2.items():
             if type(val) in [ HashMap, ArrayList ]:
                 d2[key] = __javaStructToPython(val)
+            else:
+                # If it's one of those Java numeric types then we need to
+                # forcefully convert it to a Python numeric type, since
+                # otherwise JSON gets confused and exports the value as
+                # a string.
+                if type(val) in [ Integer, Float, BigDecimal ]:
+                    d2[key] = float(val.toString())
 
     elif type(hm) is ArrayList:
         d2 = list()
