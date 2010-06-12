@@ -342,7 +342,14 @@ class __HttpHandler(HttpHandler):
             end_time   = datetime.datetime.now()
             td         = end_time-start_time
             request_ms = td.seconds*1000 + td.microseconds//1000
-            log("%s : %sms : %s : %s" % (msg, request_ms, result.getStatus(), len(str(result.getEntity()))),
+            # This is something to improve: Sometimes we may get binary
+            # data, which can't be converted to a string. In that case,
+            # we should find other means to determine the size of the data.
+            try:
+                l = len(str(result.getEntity()))
+            except:
+                l = -1
+            log("%s : %sms : %s : %s" % (msg, request_ms, result.getStatus(), l),
                                          start_time = start_time, facility=LOGF_ACCESS_LOG)
         except Exception, e:
             print traceback.format_exc()

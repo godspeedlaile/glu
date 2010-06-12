@@ -59,11 +59,24 @@ class RequestDispatcher(object):
                 browser_instance = browser_class(request)
                 result           = browser_instance.process()
                 if result.getStatus() >= 200  and  result.getStatus() < 300:
-                    # If all was OK with the request then we will
-                    # render the output in the format that was
-                    # requested by the client.
-                    content_type, data = browser_instance.renderOutput(result.getEntity())
-                    result.setEntity(data)
+                    headers = result.getHeaders()
+                    # Check if the Content-type return header was set by
+                    # the component. If so, we assume that the component
+                    # has returned data in the appropriate format already
+                    # and we will not perform any encoding.
+                    # For example, if an image file is returned then the
+                    # component may have set the content type to "image/jpg".
+                    if headers:
+                        content_type = result.getHeaders().get("Content-type")
+                    else:
+                        content_type = None
+                    if content_type is None:
+                        # If all was OK with the request then we will
+                        # render the output in the format that was
+                        # requested by the client. But only if we don't
+                        # have a content-type set on this request already.
+                        content_type, data = browser_instance.renderOutput(result.getEntity())
+                        result.setEntity(data)
             else:
                 result = Result.notFound("Not found" )
         except GluMethodNotAllowedException, e:

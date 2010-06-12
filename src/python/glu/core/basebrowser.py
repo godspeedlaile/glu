@@ -85,7 +85,7 @@ class BaseBrowser(object):
                       that the output should be in HTML.
         @type data:   object
         
-        @return:      Tuple with content type and Endered data, ready to be sent to the client.
+        @return:      Tuple with content type and rendered data, ready to be sent to the client.
         @rtype:       tuple of (string, string)
 
         """
