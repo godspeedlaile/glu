@@ -45,9 +45,13 @@ class JythonJavaHttpRequest(GluHttpRequest):
     __native_req       = None
     __request_uri_str  = None
     __request_headers  = None
-    __response_headers = dict()
+    __response_headers = None
 
     _native_mode = False
+
+    def __init__(self, *args, **kwargs):
+        super(JythonJavaHttpRequest, self).__init__(*args, **kwargs)
+        self.__response_headers = dict()
     
     def setNativeMode(self):
         self._native_mode = True
