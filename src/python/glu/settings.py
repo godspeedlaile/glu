@@ -37,17 +37,16 @@ HTML_HEADER = """
         
             p {
                 color:#000;
-                font-size:14px;
             }
             
             h1 {
                 font-weight:bold;
-                font-size:18px;
+                font-size:2em;
             }
             
             h2 {
                 font-weight:bold;
-                font-size:16px;
+                font-size:1.5em;;
             }
         
             hr {
@@ -61,16 +60,20 @@ HTML_HEADER = """
                 color:#222;
             }
 
-            td {
-                padding:4px;
-            }
-
             td.dict {
                 padding:2px 4px;
                 background-color:#e5e6e3;
                 border: 1px solid #fff;
+                color:#aaa;
             }
 
+            td.key {
+                padding:2px 4px;
+                background-color:#f3f4f2;
+                border: 1px solid #fff;
+                color:#334;
+            }
+            
             td {
                 padding:2px 4px;
                 background-color:#f3f4f2;
@@ -84,6 +87,7 @@ HTML_HEADER = """
             body {
                 font-family:Helvetica, Arial, Verdana, sans-serif;
                 color:#222;
+                font-size:1em;
             }
                 
             a:link, a:visited, a:active {
@@ -93,17 +97,22 @@ HTML_HEADER = """
             a:hover { 
                 text-decoration: underline; 
             }
+
+            span.string {
+                font-family:Times, "Times New Roman", serif;
+                font-style:italic;
+            }
         </style> 
 
     </head>
     <body>
-        <h2><img src="/static/glu/images/logo-glu.png" alt="Glu <small>(by MuleSoft)" /></h2>
+        <h2>Glu</h2>
         <hr>
 """
 
 HTML_FOOTER = """
 <hr>
-<center><small>(c) 2010 by MuleSoft</small></center>
+<center><img src="/static/glu/images/logo-mule-s.png" alt="MuleSoft" /></center>
 </body>
 </html>
 """

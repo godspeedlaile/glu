@@ -99,9 +99,12 @@ class HtmlRenderer(BaseRenderer):
         keys.sort()
         out = "%s<table border=%d cellspacing=0>\n" % (annotation, self.border_width)
         if self.table_headers:
-            out += '<tr><td class="dict"><i>Key</i></td><td class="dict"><i>Value</i></td></tr>\n'
+            # For the time being, we won't render table headers, since they look a
+            # bit clunky. If we want them to go back in, just uncomment this line.
+            #out += '<tr><td class="dict"><i>Key</i></td><td class="dict"><i>Value</i></td></tr>\n'
+            pass
         for key in keys:
-            out += "<tr>\n<td valign=top>%s</td>\n<td valign=top>" % \
+            out += '<tr>\n<td class="key" valign=top>%s</td>\n<td valign=top>' % \
                                             (key.as_html() if type(key) is Url else key)
             out += self.render(data[key])
             out += "\n</td>\n</tr>"
@@ -174,7 +177,8 @@ class HtmlRenderer(BaseRenderer):
                 # Output as number
                 out = data_str
             else:
-                out = '"%s"' % data_str.replace("\n", "<br/>")
+                #out = '<i>%s</i>' % data_str.replace("\n", "<br/>")
+                out = '<span class="string">%s</span>' % data_str.replace("\n", "<br/>")
         return out
 
     def render(self, data, top_level=False):
