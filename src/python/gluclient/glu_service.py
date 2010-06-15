@@ -238,9 +238,8 @@ class GluAccessibleService(GluService):
                         If no input was specified then method defaults to GET.
         @type mthod:    string
 
-        @return:        An HttpResult structure with information about the server
-                        response.
-        @rtype:         HttpResult
+        @return:        A status, data tuple for the server's response.
+        @rtype:         tuple
 
         """
         # Check if all mandatory parameters have been set
@@ -279,4 +278,11 @@ class GluAccessibleService(GluService):
         server       = self.__resource.get_server()
         status, data = server._json_send(uri, data=self.__input_buf, method=method)
         return status, data
+
+    #
+    # For convenience, we offer write access to those settable
+    # elements via properties.
+    #
+    input  = property(None, set_input)
+    params = property(None, set_params)
 

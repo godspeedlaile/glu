@@ -96,6 +96,9 @@ class GluServer(object):
                 combined_headers[name] = value
             headers = combined_headers
 
+        if data:
+            headers["Content-length"] = len(data)
+
         self.__server_conn.request(method, url, body=data, headers=headers)
         r = self.__server_conn.getresponse()
 

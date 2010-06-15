@@ -73,15 +73,17 @@ for name in all_params:
     print
     while True:
         inp = raw_input("    Enter value%s: " % msg)
-        if not inp  and  param.is_required():
-            print "*** A value is required for this parameter. Please try again..."
-            continue
-        try:
-            param.sanity_check(inp)
-        except:
-            print "*** This input cannot successfully be converted to the required type. Please try again..."
-            continue
-        pvals[name] = inp
+        if not inp:
+            if param.is_required():
+                print "*** A value is required for this parameter. Please try again..."
+                continue
+        else:
+            try:
+                param.sanity_check(inp)
+            except:
+                print "*** This input cannot successfully be converted to the required type. Please try again..."
+                continue
+            pvals[name] = inp
         print
         break
 
