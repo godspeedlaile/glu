@@ -115,7 +115,7 @@ class BaseCapabilities(BaseComponentCapabilities):
                 header_dict.update(headers)
                 headers = header_dict
 
-            opener.addheaders.extend(headers.items())
+            opener.addheaders.append(headers.items())
 
         resp = opener.open(url, data)
         code = HTTP.OK
@@ -139,7 +139,7 @@ class BaseCapabilities(BaseComponentCapabilities):
         @rtype:            HttpResult
         
         """
-        res                  =  HttpResult()
+        res                  = HttpResult()
         res.status, res.data = self.__http_access(url, headers=headers)
         return res
 
@@ -164,6 +164,7 @@ class BaseCapabilities(BaseComponentCapabilities):
         @rtype:            HttpResult
         
         """
-        res                  =  HttpResult()
+        res                  = HttpResult()
         res.status, res.data = self.__http_access(url, data, headers)
         return res
+
