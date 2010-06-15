@@ -32,24 +32,72 @@ HTML_HEADER = """
 <html>
     <head>
         <title>MuleSoft Glu</title>
-        <style type="text/css">
-            table {
-                   border-color:#aaaaaa;
-                   /*border-spacing:0px;*/
+
+        <style type="text/css"> 
+        
+            p {
+                color:#000;
+                font-size:14px;
             }
+            
+            h1 {
+                font-weight:bold;
+                font-size:18px;
+            }
+            
+            h2 {
+                font-weight:bold;
+                font-size:16px;
+            }
+        
+            hr {
+                height: 1px;
+                background:#bbb;
+                margin:20px 0px;
+            }
+        
+            table {
+                border: 1px solid #fff;
+                color:#222;
+            }
+
             td {
                 padding:4px;
-                /*border:1px solid #aaaaaa;*/
-                
             }
+
             td.dict {
                 padding:2px 4px;
-                background-color:#dddddd;
+                background-color:#e5e6e3;
+                border: 1px solid #fff;
             }
-        </style>
+
+            td {
+                padding:2px 4px;
+                background-color:#f3f4f2;
+                border: 1px solid #fff;
+            }
+            
+            a { 
+                color: #016C96; 
+            }
+
+            body {
+                font-family:Helvetica, Arial, Verdana, sans-serif;
+                color:#222;
+            }
+                
+            a:link, a:visited, a:active {
+                text-decoration: none; 
+            }
+            
+            a:hover { 
+                text-decoration: underline; 
+            }
+        </style> 
+
     </head>
     <body>
-        <h2>Glu <small>(by MuleSoft)</small></h2>
+        <h2><img src="/static/glu/images/logo-glu.png" alt="Glu <small>(by MuleSoft)" /></h2>
         <hr>
 """
 
