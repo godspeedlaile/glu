@@ -1,6 +1,5 @@
-
 """
-Definition of the GluService class.
+Definition of the L{GluService} and L{GluAccessibleService} class.
 
 """
 import urllib
@@ -8,16 +7,14 @@ import urllib
 from gluclient.glu_client_exception import GluClientException
 from gluclient.glu_parameter        import GluParameter
 
-class HttpResult(object):
-    status = None
-    data   = None
-
 class GluService(object):
     """
-    Represents information about a service of a Glu component or resource.
+    Represents information about a service of a Glu component.
 
     This representation can be used by clients to find out about
-    service capabilities.
+    service capabilities, but it cannot be used to actually access
+    a service, since that operation is only allowed for resources.
+    See also L{GluAccessibleService}.
 
     """
     # The keys to the component's meta data dictionary.
@@ -91,7 +88,7 @@ class GluService(object):
         """
         Return the description of the service.
 
-        @return     Description of the service.
+        @return:    Description of the service.
         @rtype:     string
 
         """
@@ -101,7 +98,7 @@ class GluService(object):
         """
         Return the URI of the service.
 
-        @return     URI of the service.
+        @return:    URI of the service.
         @rtype:     string
 
         """
@@ -112,7 +109,7 @@ class GluService(object):
         Return all parameters defined for this service.
 
         @return:    Dictionary of all parameters.
-        @rtype:     dict of GluParam
+        @rtype:     dict of L{GluParameter}
 
         """
         return self.__parameters
@@ -125,7 +122,7 @@ class GluService(object):
         @type name:     string
 
         @return:        Dictionary of all parameters.
-        @rtype:         dict of GluParam
+        @rtype:         dict of L{GluParameter}
 
         """
         try:
@@ -137,16 +134,27 @@ class GluService(object):
         """
         Return list of positional parameters.
 
-        @return:        List of positional parameters.
+        The order of the parameter names in the returned list
+        reflects the order in which values for those parameters
+        are expected in the URI path.
+
+        @return:        List of names of positional parameters.
         @rtype:         list
 
         """
         return self.__positional_params
 
+    #
+    # For convenience, we offer read access to several
+    # elements via properties.
+    #
+    name        = property(get_name, None)
+    description = property(get_description, None)
+    uri         = property(get_uri, None)
 
 class GluAccessibleService(GluService):
     """
-    Represents information about a service of a Glu component or resource,
+    Represents information about a service of a Glu resource,
     ready to be accessed.
 
     This representation can be used by clients to find out about
@@ -161,6 +169,11 @@ class GluAccessibleService(GluService):
 
     def __init__(self, resource, name, sdesc):
         """
+        Create a new accessible service instance.
+
+        @param resource:    The resource to which this service belongs.
+        @type resource:     L{GluResource}
+
         @param name:        Name of this service.
         @type name:         string
 
@@ -189,7 +202,7 @@ class GluAccessibleService(GluService):
         @type value:        Any type for which we can use str()
 
         @return:            Reference to ourselves, so that set() calls can be chained
-        @rtype:             GluAccessibleService
+        @rtype:             L{GluAccessibleService}
 
         """
         pdef = self.get_parameter(name)
@@ -207,7 +220,7 @@ class GluAccessibleService(GluService):
         @type param_dict:   dict
 
         @return:            Reference to ourselves, so that set() calls can be chained
-        @rtype:             GluAccessibleService
+        @rtype:             L{GluAccessibleService}
 
         """
         for name, value in param_dict.items():
@@ -223,7 +236,7 @@ class GluAccessibleService(GluService):
         @type buf:      string
 
         @return:        Reference to ourselves, so that set() calls can be chained
-        @rtype:         GluAccessibleService
+        @rtype:         L{GluAccessibleService}
 
         """
         self.__input_buf = buf
@@ -236,7 +249,7 @@ class GluAccessibleService(GluService):
                         defaults to POST. If the caller requests anything but
                         PUT or POST with a set input then an exception is raised.
                         If no input was specified then method defaults to GET.
-        @type mthod:    string
+        @type method:   string
 
         @return:        A status, data tuple for the server's response.
         @rtype:         tuple

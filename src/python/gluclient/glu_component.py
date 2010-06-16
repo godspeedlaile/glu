@@ -1,6 +1,11 @@
-
 """
-Definition of the GluComponent class.
+Definition of the L{GluComponent} class.
+
+This represents a component that resides on a Glu server.
+The object is used for introspection (finding out about
+the component meta data, the available services and any
+parameters) as well as a starting point for resource
+creation.
 
 """
 
@@ -15,7 +20,7 @@ class GluComponent(object):
 
     This representation can be used by clients to find out about
     component capabilities and also as a starting point to create
-    new resources, by utilizing the get_resource_template() function.
+    new resources, by utilizing the L{get_resource_template}() function.
 
     """
     # The keys to the component's meta data dictionary.
@@ -47,7 +52,7 @@ class GluComponent(object):
         Create a new component representation in memomory.
 
         @param server:      The Glu server on which the component resides.
-        @type server:       GluServer
+        @type server:       L{GluServer}
 
         @param cdesc:       Dictionary describing the server component. This
                             is the dictionary returned by the server when a
@@ -117,7 +122,7 @@ class GluComponent(object):
         """
         Return the description of the component.
 
-        @return     Description of the component.
+        @return:    Description of the component.
         @rtype:     string
 
         """
@@ -127,7 +132,7 @@ class GluComponent(object):
         """
         Return the doc string of the component.
 
-        @return     Documentation of the component.
+        @return:    Documentation of the component.
         @rtype:     string
 
         """
@@ -140,7 +145,7 @@ class GluComponent(object):
         """
         Return the URI of the component.
 
-        @return     URI of the component.
+        @return:    URI of the component.
         @rtype:     string
 
         """
@@ -151,7 +156,7 @@ class GluComponent(object):
         Return the GluServer structure of the server on which this component lives.
 
         @return:    The server of this component.
-        @rtype:     GluServer
+        @rtype:     L{GluServer}
 
         """
         return self.__server
@@ -161,7 +166,7 @@ class GluComponent(object):
         Return parameter definition for resource description parameter.
 
         @return:    The resource description parameter definition.
-        @rtype:     GluParameter
+        @rtype:     L{GluParameter}
 
         """
         return self.__rcp_description_param
@@ -171,7 +176,7 @@ class GluComponent(object):
         Return parameter definition for resource public flag parameter.
 
         @return:    The resource public flag parameter definition.
-        @rtype:     GluParameter
+        @rtype:     L{GluParameter}
 
         """
         return self.__rcp_public_param
@@ -181,7 +186,7 @@ class GluComponent(object):
         Return parameter definition for resource suggested name parameter.
 
         @return:    The resource suggested name parameter definition.
-        @rtype:     GluParameter
+        @rtype:     L{GluParameter}
 
         """
         return self.__rcp_suggested_name_param
@@ -191,7 +196,7 @@ class GluComponent(object):
         Return all parameters defined for this component.
 
         @return:    Dictionary of all parameters.
-        @rtype:     dict of GluParameter
+        @rtype:     dict of L{GluParameter}
 
         """
         return self.__parameters
@@ -204,7 +209,7 @@ class GluComponent(object):
         @type name:     string
 
         @return:        Dictionary of all parameters.
-        @rtype:         GluParameter
+        @rtype:         L{GluParameter}
 
         """
         try:
@@ -217,7 +222,7 @@ class GluComponent(object):
         Return all services defined for this component.
 
         @return:    Dictionary of all services.
-        @rtype:     dict of GluService
+        @rtype:     dict of L{GluService}
 
         """
         return self.__services
@@ -230,7 +235,7 @@ class GluComponent(object):
         @type name:     string
 
         @return:        Dictionary of service definition.
-        @rtype:         GluService
+        @rtype:         L{GluService}
 
         """
         try:
@@ -243,10 +248,18 @@ class GluComponent(object):
         Return a resource template for this component.
 
         @return:        Resource template.
-        @rtype:         GluResourceTemplate
+        @rtype:         L{GluResourceTemplate}
 
         """
         return GluResourceTemplate(self)
 
-
+    #
+    # For convenience, we offer read access to several
+    # elements via properties.
+    #
+    name        = property(get_name, None)
+    docs        = property(get_docs, None)
+    description = property(get_description, None)
+    uri         = property(get_uri, None)
+    server      = property(get_server, None)
 

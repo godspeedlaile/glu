@@ -1,6 +1,5 @@
-
 """
-Definition of the GluClient API.
+Definition of the Glu client API.
 
 """
 

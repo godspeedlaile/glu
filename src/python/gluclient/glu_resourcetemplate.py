@@ -1,6 +1,5 @@
-
 """
-Definition of the GluResourceTemplate class.
+Definition of the L{GluResourceTemplate} class.
 
 """
 
@@ -13,9 +12,9 @@ class GluResourceTemplate(object):
     Represents a template that can be used by a client to create a new
     resource.
 
-    This representation can be used by clients to find out about
-    component capabilities and also as a starting point to create
-    new resources, by utilizing the get_resource_template() function.
+    The resource template assists the client in setting the required
+    resource creation time parameters and provides the method for
+    the creation of the new resource.
 
     """
     # Keys for the directory we post to the server to create a new resource
@@ -29,8 +28,8 @@ class GluResourceTemplate(object):
         """
         Create a new resource template in memory.
 
-        @param comp:      The GluComponent which created this template.
-        @type comp:       GluComponent
+        @param comp:      The L{GluComponent} which created this template.
+        @type comp:       L{GluComponent}
 
         """
         self.__component                      = comp
@@ -41,8 +40,8 @@ class GluResourceTemplate(object):
         """
         Return all parameters defined for this template's component.
 
-        @return:    Dictionary of all parameters.
-        @rtype:     dict of GluParameter
+        @return:    Dictionary of all parameter descriptions.
+        @rtype:     dict of L{GluParameter}
 
         """
         return self.__component.get_all_parameters()
@@ -54,8 +53,8 @@ class GluResourceTemplate(object):
         @param name:    Name of the parameter.
         @type name:     string
 
-        @return:        Dictionary of all parameters.
-        @rtype:         GluParameter
+        @return:        A parameter description.
+        @rtype:         L{GluParameter}
 
         """
         return self.__component.get_parameter(name)
@@ -65,7 +64,7 @@ class GluResourceTemplate(object):
         Return parameter definition for this template's resource description parameter.
 
         @return:    The resource description parameter definition.
-        @rtype:     GluParameter
+        @rtype:     L{GluParameter}
 
         """
         return self.__component.get_resource_description()
@@ -75,7 +74,7 @@ class GluResourceTemplate(object):
         Return parameter definition for this template's resource public flag parameter.
 
         @return:    The resource public flag parameter definition.
-        @rtype:     GluParameter
+        @rtype:     L{GluParameter}
 
         """
         return self.__component.get_resource_public_flag()
@@ -85,7 +84,7 @@ class GluResourceTemplate(object):
         Return parameter definition for this template's resource suggested name parameter.
 
         @return:    The resource suggested name parameter definition.
-        @rtype:     GluParameter
+        @rtype:     L{GluParameter}
 
         """
         return self.__component.get_resource_suggested_name()
@@ -103,7 +102,7 @@ class GluResourceTemplate(object):
         @type value:        object
 
         @return:            Reference to ourselves, so that set() calls can be chained
-        @rtype:             GluResourceTemplate
+        @rtype:             L{GluResourceTemplate}
 
         """
         pdef = self.get_parameter(name)
@@ -123,8 +122,8 @@ class GluResourceTemplate(object):
                           of this resource template.
         @type params:     dict
 
-        @return:            Reference to ourselves, so that set() calls can be chained
-        @rtype:             GluResourceTemplate
+        @return:          Reference to ourselves, so that set() calls can be chained
+        @rtype:           L{GluResourceTemplate}
 
         """
         for name, value in params.items():
@@ -139,7 +138,7 @@ class GluResourceTemplate(object):
         @type desc:     string
 
         @return:        Reference to ourselves, so that set() calls can be chained
-        @rtype:         GluResourceTemplate
+        @rtype:         L{GluResourceTemplate}
 
         """
         if type(desc) not in [ str, unicode ]:
@@ -152,11 +151,11 @@ class GluResourceTemplate(object):
         """
         Sets the 'public' resource creation time parameter.
 
-        @param public:  Public flag for the new resource.
-        @type public:   bool
+        @param flag:    Public flag for the new resource.
+        @type flag:     bool
 
         @return:        Reference to ourselves, so that set() calls can be chained
-        @rtype:         GluResourceTemplate
+        @rtype:         L{GluResourceTemplate}
 
         """
         if type(flag) is not bool:
@@ -173,7 +172,7 @@ class GluResourceTemplate(object):
         @type name:     string
 
         @return:        Reference to ourselves, so that set() calls can be chained
-        @rtype:         GluResourceTemplate
+        @rtype:         L{GluResourceTemplate}
 
         """
         if type(name) not in [ str, unicode ]:
@@ -186,7 +185,7 @@ class GluResourceTemplate(object):
         """
         Posts a new resource description to the server.
 
-        Returns an initialized GluResource structure, ready to use.
+        Returns an initialized L{GluResource} object, ready to use.
 
         """
         # Check if all mandatory parameters have been set
@@ -212,15 +211,8 @@ class GluResourceTemplate(object):
     # For convenience, we offer write access to those settable
     # elements via properties.
     #
-
     suggested_name = property(None, set_suggested_name)
     public         = property(None, set_public_flag)
     description    = property(None, set_description)
     params         = property(None, set_params)
-
-
-        
-
-
-
 

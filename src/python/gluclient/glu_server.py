@@ -1,8 +1,8 @@
+"""
+Definition of the L{GluServer} class.
 
 """
-Definition of the GluServer class.
 
-"""
 try:
     import json
 except:
@@ -99,14 +99,20 @@ class GluServer(object):
         if data:
             headers["Content-length"] = len(data)
 
-        self.__server_conn.request(method, url, body=data, headers=headers)
-        r = self.__server_conn.getresponse()
+        server_conn = httplib.HTTPConnection(self.__host, self.__port)
+        server_conn.request(method, url, body=data, headers=headers)
+
+        r = server_conn.getresponse()
 
         if status is not None:
             if status != r.status:
                 r.read()    # Empty the input stream (if we don't do that the next request will be confused)
                 raise GluClientException("Status code %s was expected for request to '%s'. Instead we received %s." % (status, url, r.status))
-        return r.status, r.read()
+
+        data = r.read()
+        server_conn.close()
+        
+        return r.status, data
 
     def _json_send(self, url, data=None, method=None, status=None):
         """
@@ -161,6 +167,9 @@ class GluServer(object):
         information should subsequently change, this server
         object won't know about it.
 
+        @param server_uri:      The full URI of the server.
+        @type server_uri:       string
+
         """
         self.__server_uri    = server_uri
 
@@ -178,12 +187,6 @@ class GluServer(object):
         else:
             self.__host = parse_result.netloc
             self.__port = 80
-
-        #
-        # Open a connection to the server. This connection is cached
-        # and reused for all subsequent requests.
-        #
-        self.__server_conn = httplib.HTTPConnection(self.__host, self.__port)
 
         #
         # Get meta info from server and perform some sanity checking
@@ -250,7 +253,7 @@ class GluServer(object):
         """
         return self.__name
 
-    def get_server_doc(self):
+    def get_server_docs(self):
         """
         Return the doc string for this server.
 
@@ -362,13 +365,13 @@ class GluServer(object):
 
     def get_component(self, name):
         """
-        Return a GluComponent object for the specified component.
+        Return a L{GluComponent} object for the specified component.
 
         @param name:    Name of component.
         @type name:     string
 
-        @return:        GluComponent for the specified component.
-        @rtype:         GluComponent
+        @return:        Client representation for the specified component.
+        @rtype:         L{GluComponent}
 
         """
         status, d = self._json_send(self.__component_uri + "/" + name, status=200)
@@ -376,15 +379,24 @@ class GluServer(object):
 
     def get_resource(self, name):
         """
-        Return a GluResource object for the specified resource.
+        Return a L{GluResource} object for the specified resource.
 
         @param name:    Name of resource.
         @type name:     string
 
-        @return:        GluResource for the specified resource.
-        @rtype:         GluResource
+        @return:        Client representation for the specified resource.
+        @rtype:         L{GluResource}
 
         """
         status, d = self._json_send(self.__resource_uri + "/" + name, status=200)
         return GluResource(self, d)
+
+    #
+    # For convenience, we offer read access to several
+    # elements via properties.
+    #
+    version  = property(get_server_version, None)
+    uri      = property(get_server_uri, None)
+    name     = property(get_server_name, None)
+    docs     = property(get_server_docs, None)
 

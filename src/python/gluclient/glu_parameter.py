@@ -1,6 +1,12 @@
-
 """
-Definition of the GluParameter class.
+Definition of the L{GluParameter} class.
+
+This object describes the properties of a paremeter.
+Parameters are used in different contexts.
+
+    - A resource creation time parameter of a component.
+    - A parameter for a component service
+    - A parameter for a resource service (sub-resource)
 
 """
 
@@ -9,6 +15,9 @@ from gluclient.glu_client_exception import GluClientException
 def _numstr_to_num(x):
     """
     Translate a string to a numeric value.
+
+    This sort of translation function is necessary to be more
+    flexible in handling the type of input for parameter values.
 
     @param x:    String representing a number or a number
                  type.
@@ -28,6 +37,9 @@ def _numstr_to_num(x):
 def _bool_convert(x):
     """
     Translate a string to a boolean value.
+
+    This sort of translation function is necessary to be more
+    flexible in handling the type of input for parameter values.
 
     Strings like 'y', 'yes', 'true', 't', '1' are interpreted
     as True, all other strings are considered to mean False.
@@ -208,4 +220,12 @@ class GluParameter(object):
 
         """
         return self.__required
+
+    #
+    # Some properties for conevenience
+    #
+    name        = property(get_name, None)
+    description = property(get_description, None)
+    required    = property(is_required, None)
+    type_str    = property(get_parameter_type_str, None)
 

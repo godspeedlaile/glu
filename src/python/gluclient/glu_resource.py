@@ -1,6 +1,5 @@
-
 """
-Definition of the GluResource class.
+Definition of the L{GluResource} class.
 
 """
 
@@ -34,12 +33,12 @@ class GluResource(object):
         Create a new resource representation in memomory.
 
         @param server:      The Glu server on which the resource resides.
-        @type server:       GluServer
+        @type server:       L{GluServer}
 
-        @param cdesc:       Dictionary describing the server resource. This
+        @param rdesc:       Dictionary describing the server resource. This
                             is the dictionary returned by the server when a
                             reource URI is accessed.
-        @type cdesc:        dict
+        @type rdesc:        dict
 
         """
         self.__server = server
@@ -87,7 +86,7 @@ class GluResource(object):
         """
         Return the description of the resource.
 
-        @return     Description of the resource.
+        @return:    Description of the resource.
         @rtype:     string
 
         """
@@ -97,7 +96,7 @@ class GluResource(object):
         """
         Return the URI of the resource.
 
-        @return     URI of the resource.
+        @return:    URI of the resource.
         @rtype:     string
 
         """
@@ -105,10 +104,10 @@ class GluResource(object):
 
     def get_server(self):
         """
-        Return the GluServer structure of the server on which this resource lives.
+        Return the L{GluServer} object of the server on which this resource lives.
 
         @return:    The server of this resource.
-        @rtype:     GluServer
+        @rtype:     L{GluServer}
 
         """
         return self.__server
@@ -118,7 +117,7 @@ class GluResource(object):
         Return all services defined for this resource.
 
         @return:    Dictionary of all services.
-        @rtype:     dict of GluAccessibleService
+        @rtype:     dict of L{GluAccessibleService}
 
         """
         return self.__services
@@ -131,7 +130,7 @@ class GluResource(object):
         @type name:     string
 
         @return:        Dictionary of service definition.
-        @rtype:         GluAccessibleService
+        @rtype:         L{GluAccessibleService}
 
         """
         try:
@@ -146,4 +145,12 @@ class GluResource(object):
         """
         self.__server._send(self.__uri, method="DELETE", status=200)
 
+    #
+    # For convenience, we offer read access to several
+    # elements via properties.
+    #
+    name        = property(get_name, None)
+    description = property(get_description, None)
+    uri         = property(get_uri, None)
+    server      = property(get_server, None)
 
