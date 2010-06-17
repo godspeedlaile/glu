@@ -5,6 +5,7 @@ A test component.
 # Python imports
 import urllib
 import glujson as json
+import urllib
 
 # Glu imports
 from glu.components.api import *
@@ -12,29 +13,30 @@ from glu.components.api import *
 class GsearchComponent(BaseComponent):
     NAME             = "GoogleSearchComponent"
     PARAM_DEFINITION = {
-                           "api_key" : ParameterDef(PARAM_STRING, "Google API key", required=True)
+                           "api_key" :        ParameterDef(PARAM_STRING, "Google API key", required=True),
+                           "default_search" : ParameterDef(PARAM_STRING, "A default search term", required=False,
+                                                           default="the current time")
                        }
     
     DESCRIPTION      = "Provides an interface to Google Search."
     DOCUMENTATION    =  """
                         This component is used to perform Google searches.
                         
-                        Provide a search term as the 'query' attribute.
+                        Provide a search term as the 'query' attribute for the
+                        'search' sub-resource. If no query is specified then
+                        the default search term, specified during resource
+                        creation time, is used.
                         """
     SERVICES         = {
                            "search" :   {
                                "desc"   : "Provide 'query' as attribute to GET a search result. A 'num'ber of results can optionally be specified as well.",
                                "params" : {
                                     "query" : ParameterDef(PARAM_STRING, "The search query",
-                                                           required=True,
-                                                           default="computer"),
+                                                           required=False, default=""),
                                     "num"   : ParameterDef(PARAM_NUMBER, "The number of results you would like to have returned",
                                                            required=False,
                                                            default=10)
                                }
-                           },
-                           "sss" : {
-                                    "desc" : "Some desc",
                            }
                        }
     
@@ -62,6 +64,8 @@ class GsearchComponent(BaseComponent):
         # 
         start = 1
         results = []
+        if not query:
+            query=urllib.quote(self.default_search)
         while len(results) < num:
             url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&start=%d" % (query, start)
             code, data_str = self.httpGet(url)
@@ -74,6 +78,3 @@ class GsearchComponent(BaseComponent):
                     return HTTP.BAD_REQUEST, "Result data was malformed: " + str(e)
         return Result(code, results[:num])
 
-
-    def sss(self, input, method):
-        return Result.ok({ "some float" : 123.456, "some int" : 111, "some list" : [ 11, "22", 33.3 ] })
