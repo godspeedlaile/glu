@@ -70,7 +70,7 @@ function download
 # Append two file ($1 head and $2 body), set execute flag on
 # the result and finally move into a designated location ($3).
 function script_combiner {
-    cat $1 $2 > __tmp_script_combiner
+    cat "$1" "$2" > __tmp_script_combiner
     if [ $? == 1 ]; then
         error_report "Cannot append '$2' to '$1' in location '__tmp_script_combiner'. Abort..."
         exit 1
@@ -137,6 +137,10 @@ if [ $? == 1 ]; then
     # Jython was not found. Does it exist already on the system?
     #
     while [ 1 ] ; do
+        if [ ! -z "$JYTHON_HOME" ]; then
+            exec_test "$JYTHON_HOME/jython" "You specified a "'$JYTHON_HOME'" variable, but that directory does not contain a jython executable.\nPlease unset or correct "'$JYTHON_HOME'" and try again..."
+            break
+        fi
         read -p "Do you have Jython installed already? (y/n): " ui
         if [ ! -z "$ui" ]; then
             if [ "$ui" == "y" ]; then
