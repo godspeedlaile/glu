@@ -21,18 +21,18 @@ import java.util.HashMap;
  */
 public class GluResource
 {
-    protected final static String           NAME_KEY     = "name";
-    protected final static String           DESC_KEY     = "desc";
-    protected final static String           URI_KEY      = "uri";
-    protected final static String           SERVICES_KEY = "services";
+    protected final static String                   NAME_KEY     = "name";
+    protected final static String                   DESC_KEY     = "desc";
+    protected final static String                   URI_KEY      = "uri";
+    protected final static String                   SERVICES_KEY = "services";
 
-    protected final static String[]         REQUIRED_KEYS  = { NAME_KEY, DESC_KEY, URI_KEY, SERVICES_KEY };
+    protected final static String[]                 REQUIRED_KEYS  = { NAME_KEY, DESC_KEY, URI_KEY, SERVICES_KEY };
 
-    protected GluServer                     server;
-    protected String                        name;
-    protected String                        description;
-    protected String                        uri;    
-    protected HashMap<String, GluService>   services;
+    protected GluServer                             server;
+    protected String                                name;
+    protected String                                description;
+    protected String                                uri;    
+    protected HashMap<String, GluAccessibleService> services;
     
     /**
      * Create a new client-side resource representation.
@@ -59,7 +59,7 @@ public class GluResource
             HashMap<String, HashMap<String, ?>> sdict =
                                             (HashMap<String, HashMap<String, ?>>)rdesc.get(SERVICES_KEY);
         
-            services = new HashMap<String, GluService>();
+            services = new HashMap<String, GluAccessibleService>();
             for (String sname: sdict.keySet()) {
                 services.put(sname, new GluAccessibleService(this, sname, sdict.get(sname)));
             }            
@@ -114,7 +114,7 @@ public class GluResource
      * 
      * @return  Map of services.
      */
-    public HashMap<String, GluService> getAllServices()
+    public HashMap<String, GluAccessibleService> getAllServices()
     {
         return services;
     }
@@ -127,9 +127,9 @@ public class GluResource
      * 
      * @throws        GluClientException
      */
-    public GluService getService(String name) throws GluClientException
+    public GluAccessibleService getService(String name) throws GluClientException
     {
-        GluService service = services.get(name);
+        GluAccessibleService service = services.get(name);
         if (service == null) {
             throw new GluClientException("Service '" + name + "' is not defined.");
         }
