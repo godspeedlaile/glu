@@ -54,8 +54,8 @@ class MetaBrowser(BaseBrowser):
                     "code"     : Url(settings.PREFIX_CODE),
                     "resource" : Url(settings.PREFIX_RESOURCE),
                     "static"   : Url(settings.PREFIX_STATIC),
-                    "name"     : "MuleSoft Glu server prototype",
-                    "version"  : "(prototype)",
+                    "name"     : "MuleSoft Glu server",
+                    "version"  : settings.VERSION,
                     "doc"      : Url(settings.PREFIX_META + "/doc")
             }
             result = Result.ok(data)

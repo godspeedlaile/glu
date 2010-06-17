@@ -3,6 +3,7 @@ Settings for Glue.
 
 """
 
+VERSION         = "0.9"
 
 DOCUMENT_ROOT   = "/"
 PREFIX_META     = "/meta"
