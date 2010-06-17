@@ -90,6 +90,14 @@ class SampleComponent(BaseComponent):
         # Any kind of processing may take place here.
         # No restriction on the available language features
         # and accessible libraries.
+
+        # -----------------------------------------------
+        # Resource-creation time parameters are available
+        # as normal attributes of this object. For example,
+        # you could write:
+        #
+        # self.some_parameter
+        # self.another_parameter
         
         # -----------------------------------------------
         # BaseComponent provides a few facilities to make
