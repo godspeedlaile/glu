@@ -263,11 +263,10 @@ def makeResource(component_class, params):
             {
                 "reource creation_params" : {
                         "suggested_name" : "my_twitter",
-                        "public"         : "yes",
-                        "desc"           : "Juergen's Twitter stream"
+                        "desc"           : "Our Twitter stream"
                 },
                 "params" : {
-                        "user"     : "BrendelConsult",
+                        "user"     : "AccountName",
                         "password" : "some password"
                 },
                 "positional_params" : [ "user" ]      # Optional

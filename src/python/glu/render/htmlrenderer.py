@@ -178,7 +178,15 @@ class HtmlRenderer(BaseRenderer):
                 out = data_str
             else:
                 #out = '<i>%s</i>' % data_str.replace("\n", "<br/>")
-                out = '<span class="string">%s</span>' % data_str.replace("\n", "<br/>")
+                #out = '<span class="string">%s</span>' % data_str
+                # This is HTML rendering, so we want to give even normal text to preserve
+                # some of its formatting. A simple way to do that is to replace double \n
+                # with a single <br>. Triple \n is replaced with two <br> tags, resulting
+                # in the rendering of an empty line.
+                # This simple strategy allows us to preserve paragraph breaks and formatting
+                # without markup, which would be a nuisance in a plain text representation.
+                data_str = data_str.replace("\n\n\n", "<br/><br/>")
+                out = '<span class="string">%s</span>' % data_str.replace("\n\n", "<br/>")
         return out
 
     def render(self, data, top_level=False):

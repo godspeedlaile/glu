@@ -5,3 +5,5 @@ from glu.components.GpsWalkerComponent    import GpsWalkerComponent#Python
 from glu.components.StorageComponent      import StorageComponent#Python
 from org.mulesource.glu.component         import JavaTwitterComponent#Java
 from org.mulesource.glu.component         import TestComponent#Java
+from org.mulesource.glu.component import BlahBlah#Java
+from glu.components.WordCount import WordCount#Python

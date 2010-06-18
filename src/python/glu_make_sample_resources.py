@@ -58,9 +58,11 @@ def send_test(data, code_url):
     stream = opener.send(code_url)
     
     is_stream = True
+    """
     if ERROR_INFO[0] == 201:
         stream = ERROR_INFO[2]
         is_stream = False
+    """
     if stream:
         if is_stream:
             data = stream.read()
@@ -84,7 +86,6 @@ send_test({
              }
           },
           code_url=SERVER_URL + "/code/TwitterComponent")
-
 
 send_test({
             'params' : {

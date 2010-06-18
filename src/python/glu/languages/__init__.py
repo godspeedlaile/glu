@@ -19,6 +19,7 @@ from glu.platform_specifics           import PLATFORM, PLATFORM_JYTHON
 
 from org.mulesource.glu.exception     import *
 from org.mulesource.glu.component.api import HTTP, HttpMethod, Result
+from org.mulesource.glu.parameter     import ParameterDefNumber
 
 if PLATFORM == PLATFORM_JYTHON:
     import java.lang.Exception
@@ -122,7 +123,15 @@ def __javaServiceMethodProxy(component, request, method, method_name, input, par
     # service method.
     for name in component.componentDescriptor.getParamMap().keySet():
         if name in params:
-            setattr(component, name, params[name])
+            if type(component.componentDescriptor.getParamMap().get(name)) is ParameterDefNumber:
+                # Why do we have this? The default type for numeric parameters is
+                # BigDecimal. We can't just assign a float (or other numeric value)
+                # to a BigDecimal variable. Instead, we need to create a new
+                # instance of that type explicitly.
+                setattr(component, name, BigDecimal(params[name]))
+            else:
+                setattr(component, name, params[name])
+                
             del params[name]
     try:
         param_order = component.getParameterOrder()[method_name]
