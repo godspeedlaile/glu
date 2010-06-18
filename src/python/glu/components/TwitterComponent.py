@@ -17,10 +17,16 @@ class TwitterComponent(BaseComponent):
                        }
     
     DESCRIPTION      = "Provides access to a Twitter account."
-    DOCUMENTATION    =  """
-                        The Twitter component is designed to provide access to a Twitter account.
-                        It can be used to get status as well as update status.
-                        """
+    DOCUMENTATION    =  \
+"""The Twitter component is designed to provide access to a Twitter account.
+
+
+It can be used to get as well as update status, or to view the timeline of
+a Twitter account.
+
+
+To create the resource, the Twitter account name and password need to be specified.
+"""
     SERVICES         = {
                          "status" :   { "desc" : "You can GET the status or POST a new status to it." },
                          "timeline" : { "desc" : "You can GET the timeline of the user." },
