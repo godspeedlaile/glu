@@ -21,7 +21,6 @@ class GluResourceTemplate(object):
     __PARAMS_KEY                    = "params"
     __RCP_KEY                       = "resource_creation_params"
     __RCP_DESC_KEY                  = "desc"
-    __RCP_PUBLIC_KEY                = "public"
     __RCP_SUGGESTED_NAME_KEY        = "suggested_name"
 
     def __init__(self, comp):
@@ -68,16 +67,6 @@ class GluResourceTemplate(object):
 
         """
         return self.__component.get_resource_description()
-
-    def get_resource_public_flag(self):
-        """
-        Return parameter definition for this template's resource public flag parameter.
-
-        @return:    The resource public flag parameter definition.
-        @rtype:     L{GluParameter}
-
-        """
-        return self.__component.get_resource_public_flag()
 
     def get_resource_suggested_name(self):
         """
@@ -147,23 +136,6 @@ class GluResourceTemplate(object):
 
         return self
 
-    def set_public_flag(self, flag):
-        """
-        Sets the 'public' resource creation time parameter.
-
-        @param flag:    Public flag for the new resource.
-        @type flag:     bool
-
-        @return:        Reference to ourselves, so that set() calls can be chained
-        @rtype:         L{GluResourceTemplate}
-
-        """
-        if type(flag) is not bool:
-            raise GluClientException("Public flag needs to be of type bool, not '%s'." % type(flag))
-        self.__resource_creation_param_values[self.__RCP_PUBLIC_KEY] = flag
-
-        return self
-
     def set_suggested_name(self, name):
         """
         Sets the 'suggested name' resource creation time parameter.
@@ -212,7 +184,6 @@ class GluResourceTemplate(object):
     # elements via properties.
     #
     suggested_name = property(None, set_suggested_name)
-    public         = property(None, set_public_flag)
     description    = property(None, set_description)
     params         = property(None, set_params)
 

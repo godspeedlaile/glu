@@ -7,7 +7,6 @@ print component.getAllServices()
 rt = component.getResourceTemplate()
 rt.set("api_key", "bar")
 rt.setDescription("Some description")
-rt.setPublicFlag(True);
 rt.setSuggestedName("somename")
 r = rt.createResource()
 

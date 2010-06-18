@@ -220,12 +220,6 @@ def test_40_twitter_code():
             "required": False, 
             "type": "string"
         }, 
-        "public": {
-            "default": False, 
-            "desc": "Indicates whether the resource should be public", 
-            "required": False, 
-            "type": "boolean"
-        }, 
         "suggested_name": {
             "default": None, 
             "desc": "Can be used to suggest the resource name to the server", 

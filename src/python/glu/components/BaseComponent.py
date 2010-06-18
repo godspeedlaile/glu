@@ -201,9 +201,6 @@ class BaseComponent(object):
         rp = dict(suggested_name = ParameterDef(PARAM_STRING,
                                                 "Can be used to suggest the resource name to the server",
                                                 required=True),
-                  public         = ParameterDef(PARAM_BOOL,
-                                                "Indicates whether the resource should be public",
-                                                required=False, default=False),
                   desc           = ParameterDef(PARAM_STRING,
                                                 "Specifies a description for this new resource",
                                                 required=False, default="A '%s' resource" % self.getName())

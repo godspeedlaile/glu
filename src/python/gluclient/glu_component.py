@@ -31,7 +31,6 @@ class GluComponent(object):
     __PARAMS_KEY                    = "params"
     __RCP_KEY                       = "resource_creation_params"
     __RCP_DESC_KEY                  = "desc"
-    __RCP_PUBLIC_KEY                = "public"
     __RCP_SUGGESTED_NAME_KEY        = "suggested_name"
     __SERVICES_KEY                  = "services"
 
@@ -43,7 +42,6 @@ class GluComponent(object):
     __uri                           = None   # URI of this component
     __parameters                    = None   # Dictionary of parameter definitions
     __rcp_description_param         = None   # Definition of the fixed 'resource description' parameter
-    __rcp_public_param              = None   # Definition of the fixed 'resource public' parameter
     __rcp_suggested_name_param      = None   # Definition of the fixed 'suggested name' parameter
     __services                      = None   # Dictionary of service definitions
 
@@ -81,7 +79,6 @@ class GluComponent(object):
             # dictionary key as the name of the parameter, don't
             # be surprised...
             self.__rcp_description_param    = GluParameter(self.__RCP_DESC_KEY,           cdesc[self.__RCP_KEY][self.__RCP_DESC_KEY])
-            self.__rcp_public_param         = GluParameter(self.__RCP_PUBLIC_KEY,         cdesc[self.__RCP_KEY][self.__RCP_PUBLIC_KEY])
             self.__rcp_suggested_name_param = GluParameter(self.__RCP_SUGGESTED_NAME_KEY, cdesc[self.__RCP_KEY][self.__RCP_SUGGESTED_NAME_KEY])
 
             # Parse the service dictionary and attempt to translate
@@ -170,16 +167,6 @@ class GluComponent(object):
 
         """
         return self.__rcp_description_param
-
-    def get_resource_public_flag(self):
-        """
-        Return parameter definition for resource public flag parameter.
-
-        @return:    The resource public flag parameter definition.
-        @rtype:     L{GluParameter}
-
-        """
-        return self.__rcp_public_param
 
     def get_resource_suggested_name(self):
         """

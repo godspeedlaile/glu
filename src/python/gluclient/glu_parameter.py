@@ -99,10 +99,10 @@ class GluParameter(object):
     __TYPE_CONVERT = {
         __PARAM_STRING   : ([str, unicode], None), 
         __PARAM_PASSWORD : ([str, unicode], None),
-        __PARAM_BOOL     : ([bool], _bool_convert),
+        __PARAM_BOOL     : ([str, unicode, bool], _bool_convert),
         __PARAM_DATE     : ([None], lambda x : date(*[ int(elem) for elem in x.split("-")])),
         __PARAM_TIME     : ([None], lambda x : time_class(*[ int(elem) for elem in x.split(":")])),
-        __PARAM_NUMBER   : ([int, float], _numstr_to_num),
+        __PARAM_NUMBER   : ([str, unicode, int, float], _numstr_to_num),
         __PARAM_URI      : ([str, unicode], None),
     }
 

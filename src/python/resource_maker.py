@@ -112,7 +112,6 @@ if not desc:
     desc = desc_default
 
 rt.description    = desc
-rt.public         = True
 rt.suggested_name = name
 
 print "\n=== Attempting to create new resource on the server ==="

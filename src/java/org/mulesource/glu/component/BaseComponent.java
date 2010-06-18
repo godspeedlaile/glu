@@ -312,8 +312,6 @@ public abstract class BaseComponent
         HashMap<String, ParameterDef> rp = new HashMap<String, ParameterDef>();
         rp.put("suggested_name", new ParameterDefString("Can be used to suggest the resource name to the server",
                                                         true, ""));
-        rp.put("public",         new ParameterDefBoolean("Indicates whether the resource should be public",
-                                                         false, false));
         rp.put("desc",           new ParameterDefString("Specifies a description for this new resource",
                                                         false, "A '" + getName() + "' resource")); 
 

@@ -79,16 +79,6 @@ public class GluResourceTemplate
      * 
      * @return  Representation of this parameter.
      */
-    public GluParameter getResourcePublicFlag()
-    {
-        return component.getPublicFlag();
-    }
-    
-    /**
-     * Return parameter definition for this template's public flag parameter.
-     * 
-     * @return  Representation of this parameter.
-     */
     public GluParameter getResourceSuggestedName()
     {
         return component.getSuggestedName();
@@ -123,18 +113,6 @@ public class GluResourceTemplate
     public GluResourceTemplate setDescription(String desc)
     {
         resourceCreationParamValues.put(RCP_DESC_KEY, desc);
-        return this;
-    }
-    
-    /**
-     * Sets the 'public' resource creation time parameter.
-     * 
-     * @param  desc  The public flag for the new resource.
-     * @return       Reference to ourselves so that set...() calls can be chained.
-     */
-    public GluResourceTemplate setPublicFlag(boolean flag)
-    {
-        resourceCreationParamValues.put(RCP_PUBLIC_KEY, flag);
         return this;
     }
     

@@ -177,18 +177,6 @@ public class GluComponent
     }
 
     /**
-     * Return definition of the public flag parameter.
-     * 
-     * The public flag parameter is used when creating a resource.
-     * 
-     * @return  Definition of the public flag parameter.
-     */
-    public GluParameter getPublicFlag()
-    {
-        return rcpPublicParam;
-    }
-
-    /**
      * Return definition of the suggested name parameter.
      * 
      * The suggested name parameter is used when creating a resource.
