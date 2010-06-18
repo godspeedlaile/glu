@@ -3,8 +3,6 @@ Settings for Glue.
 
 """
 
-VERSION         = "0.9"
-
 DOCUMENT_ROOT   = "/"
 PREFIX_META     = "/meta"
 PREFIX_CODE     = "/code"
@@ -16,7 +14,27 @@ LISTEN_PORT     = 8001
 STATIC_LOCATION     = "static_files/"
 RESOURCEDB_LOCATION = "resourceDB/"
 STORAGEDB_LOCATION  = "storageDB/"
+CONF_LOCATION       = "conf/"
 ROOT_DIR            = None
+
+DOC_FILE_NAME       = "DOC"
+VERSION_FILE_NAME   = "VERSION"
+
+__VERSION = None
+
+def get_version():
+    global __VERSION
+    if not __VERSION:
+        f = open(get_root_dir() + CONF_LOCATION + VERSION_FILE_NAME, "r")
+        __VERSION = f.readline().strip()
+        f.close()
+    return __VERSION
+
+def get_docs():
+    f = open(get_root_dir() + CONF_LOCATION + DOC_FILE_NAME, "r")
+    buf = ''.join(f.readlines())
+    f.close()
+    return buf
 
 def set_root_dir(rootdir):
     global ROOT_DIR

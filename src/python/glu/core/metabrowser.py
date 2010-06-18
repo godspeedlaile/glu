@@ -55,19 +55,14 @@ class MetaBrowser(BaseBrowser):
                     "resource" : Url(settings.PREFIX_RESOURCE),
                     "static"   : Url(settings.PREFIX_STATIC),
                     "name"     : "MuleSoft Glu server",
-                    "version"  : settings.VERSION,
+                    "version"  : settings.get_version(),
                     "doc"      : Url(settings.PREFIX_META + "/doc")
             }
             result = Result.ok(data)
             
         elif path == settings.PREFIX_META + "/doc":
             self.breadcrums.append(("Doc", settings.PREFIX_META + "/doc"))
-            data = """
-This is the documentation for the server.
-
-Click around and have fun.
-"""
-            result = Result.ok(data)
+            result = Result.ok(settings.get_docs())
         else:
             result = Result.notFound("Don't know this meta page")
         

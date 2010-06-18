@@ -1,0 +1,15 @@
+<h2>Welcome to Glu!</h2>
+<p>The fastest and easiest way to create RESTful resources
+in your enterprise or in the cloud.</p>
+<ul>
+ <li>As a user: Use the RESTful server API to encapsulate and share
+     your knowledge by creating useful data resources, easy to handle
+     and share with colleagues, customers or anyone else.</li>
+ <li>As a developer: Transform your custom code into reusable entities
+     by integrating them into the Glu server, using the easy component
+     API, which gives you a choice of several implementation languages.
+</ul>
+<p>Find out more about the Glu project, view detailed documentation
+and examples, tutorials, howtos and connect to the Glu developer and
+user community at the official project web-site: <a href="http://glu.mulesoft.com">glu.mulesoft.com</a></p>
+<p>Glu is an open-source project, released under the XXXXXX license.</p>
