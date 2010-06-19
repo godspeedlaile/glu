@@ -121,7 +121,7 @@ class CodeBrowser(BaseBrowser):
                 #
                 data = component.getMetaData()
                 data = languageStructToPython(component, data)
-                self.context_header.append(("[ Create resource ]", settings.PREFIX_RESOURCE+"/_createResourceForm/form/"+component_name, "target=blank"))
+                self.context_header.append(("[ Create resource ]", settings.PREFIX_RESOURCE+"/_createResourceForm/form/"+component_name, "target=_blank"))
             else:
                 #
                 # Some sub-detail of the requested component was requested
