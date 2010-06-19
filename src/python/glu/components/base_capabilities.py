@@ -3,7 +3,7 @@ Defines a base class for all components.
 
 """
 # Python imports
-import urllib, urllib2
+import urllib, urllib2, socket
 
 import glu.settings as settings
 
@@ -104,6 +104,30 @@ class BaseCapabilities(BaseComponentCapabilities):
         @rtype:            tuple
         
         """
+        #
+        # For some reason, under Jython we are REALLY slow in handling the kind
+        # of host names where we get more than one DNS hit back.
+        #
+        # As a stop gap measure:
+        # 1. Extract the host name from the URI
+        # 2. Do a normal DNS lookup for the name, using the socket library
+        # 3. Replace the host name in the URI with the IP address string
+        # 4. Add a 'Host' header with the original host name to the request
+        #
+        # Wish I wouldn't have to do that...
+        #
+        try:
+            start_of_hostname = url.index("//")
+            host_port, path   = urllib.splithost(url[start_of_hostname:])  # Wants URL starting at '//'
+            host, port        = urllib.splitport(host_port)
+            ipaddr            = socket.gethostbyname(host)                # One of the possible IP addresses for this host
+            url               = url.replace(host, ipaddr, 1)              # Replace only first occurence of host name with IP addr
+            add_headers = { "Host" : host }                               # Will add a proper host header
+        except Exception, e:
+            # Can't parse URI? Just leave it be and let itself sort out.
+            add_headers = None
+            pass
+
         opener = self.__get_http_opener(url)
         # Add any custom headers we might have (list of tuples)
         if headers:
@@ -117,7 +141,16 @@ class BaseCapabilities(BaseComponentCapabilities):
 
             opener.addheaders.append(headers.items())
 
-        resp = opener.open(url, data)
+        request = urllib2.Request(url)
+
+        if add_headers:
+            for name, value in add_headers.items():
+                request.add_header(name, value)
+
+        if data:
+            request.add_data(data)
+        resp = opener.open(request)
+        #resp = opener.open(url, data)
         code = HTTP.OK
         data = resp.read()
         return code, data
