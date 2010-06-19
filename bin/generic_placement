@@ -58,7 +58,7 @@ fi
 # Check for proper capitalization of the name
 #
 if [[ ! "${name:0:1}" =~ [A-Z] ]]; then
-    read -p "Usually, $LANGUAGE class names start with a capital letter. Are you sure you want a lower-case name? (y/n): " ui
+    read -p "Usually, $LANGUAGE class names start with a capital letter. Are you sure you want "${name:0:1}" as starting letter? (y/n): " ui
     if [ "$ui" == "n" ]; then
         echo "Please try again with a new component name."
         echo
