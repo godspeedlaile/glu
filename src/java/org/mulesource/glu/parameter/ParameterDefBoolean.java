@@ -35,6 +35,13 @@ public class ParameterDefBoolean extends ParameterDef
     {
         return defaultVal;
     }
+
+    @Override
+    public String html_type(String name)   // strange naming? This is called from Python code as well
+    {
+        String ret = "<label for=" + name + "_yes><input type=radio id="+name+"_yes name="+name+" value=yes />yes</label><br>";
+        return ret + "<label for=" + name + "_no><input type=radio id="+name+"_no name="+name+" value=no />no</label><br>";
+    }
 }
 
 

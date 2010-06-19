@@ -162,4 +162,19 @@ class ParameterDef(object):
                     required         = self.required,
                     default          = self.default)
 
+    def html_type(self, name):
+        """
+        Return the HTML form field typoe for a value of this type.
+
+        Needed when we display a resource creation form.
+
+        @return:  A string containing "checkbox" or "text"
+        @rtype:   string
+
+        """
+        if self.ptype == PARAM_BOOL:
+            return '''<label for="%s_yes"><input type="radio" id="%s_yes" name="%s" value="yes" />yes</label><br>
+                      <label for="%s_no"><input type="radio" id="%s_no" name="%s" value="no" />no</label>''' % (name, name, name, name, name, name)
+        else:
+            return '<input type="text" name="%s" />' % name
 

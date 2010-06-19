@@ -24,13 +24,13 @@ public abstract class ParameterDef
     public final static String PARAM_URI      = "uri";
     */
     
-    protected String  typeId;
-    protected String  desc;
-    protected boolean required;
+    public String  ptype;
+    public String  desc;
+    public boolean required;
     
-    public ParameterDef(String typeId, String desc, boolean required)
+    public ParameterDef(String ptype, String desc, boolean required)
     {
-        this.typeId   = typeId;
+        this.ptype    = ptype;
         this.desc     = desc;
         this.required = required;
     }
@@ -41,12 +41,17 @@ public abstract class ParameterDef
     {
         HashMap<String, Object> d = new HashMap<String, Object>();
         
-        d.put("type",     typeId);
+        d.put("type",     ptype);
         d.put("desc",     desc);
         d.put("required", required);
         d.put("default",  getDefaultVal());
         
         return d;
+    }
+
+    public String html_type(String name)   // strange naming? This is called from Python code as well
+    {
+        return "<input type=text name="+name+" />";
     }
 
 }

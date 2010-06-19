@@ -12,6 +12,8 @@ from glu.components.api                 import *
 class CombinerComponent(BaseComponent):
     NAME             = "CombinerComponent"
     PARAM_DEFINITION = {
+                           "some_number" :     ParameterDef(PARAM_NUMBER,   "Some number", required=True),
+                           "some_boolean" :    ParameterDef(PARAM_BOOL,     "Some flag", required=True),
                        }
     
     DESCRIPTION      = "Calls another component."

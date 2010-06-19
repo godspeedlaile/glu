@@ -44,32 +44,18 @@ class BaseBrowser(object):
         @type renderer_args:   dict (or None)
         
         """
-        self.request       = request
-        self.headers       = request.getRequestHeaders()
-        accept_header      = self.headers.get("Accept")
+        self.request        = request
+        self.headers        = request.getRequestHeaders()
+        accept_header       = self.headers.get("Accept")
         if not accept_header:
             accept_header = list()
-        self.human_client  = False if "application/json" in accept_header or settings.NEVER_HUMAN else True
-        self.header        = ""
-        self.footer        = ""
-        self.renderer_args = renderer_args
-        self.breadcrums    = []
+        self.human_client   = False if "application/json" in accept_header or settings.NEVER_HUMAN else True
+        self.header         = ""
+        self.footer         = ""
+        self.renderer_args  = renderer_args
+        self.breadcrumbs    = list()
+        self.context_header = list()  # Contextual menus or other header items, possibly displayed by renderer
     
-    def getBreadcrums(self):
-        """
-        Return the breadcrum definition for this request.
-        
-        Breadcrums are maintained by each browser according to
-        a simpe definition: [ (name, uri), (name, uri), ... ]
-        
-        The breadcrums are passed to the renderer.
-        
-        @return:     List of breadcrums.
-        @rtype:      list
-        
-        """
-        return self.breadcrums
-            
     def renderOutput(self, data):
         """
         Take a Python object and return it rendered.
@@ -90,7 +76,7 @@ class BaseBrowser(object):
 
         """
         if self.human_client:
-            renderer = HtmlRenderer(self.renderer_args, self.breadcrums)
+            renderer = HtmlRenderer(self.renderer_args, self.breadcrumbs, self.context_header)
         else:
             renderer = JsonRenderer(self.renderer_args)
         return renderer.CONTENT_TYPE, renderer.base_renderer(data, top_level=True)

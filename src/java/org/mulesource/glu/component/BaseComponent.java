@@ -26,6 +26,7 @@ import org.mulesource.glu.component.api.*;
 import org.mulesource.glu.exception.GluException;
 import org.mulesource.glu.parameter.*;
 
+
 public abstract class BaseComponent
 {
     public final String                              LANGUAGE = "JAVA";
@@ -318,6 +319,14 @@ public abstract class BaseComponent
         d.put("resource_creation_params", changeParamsToPlainDict(rp));
         
         return d;
+    }
+
+    public HashMap<String, ParameterDef> getParams() throws GluException
+    {
+        if (componentDescriptor == null) {
+            annotationParser();
+        }
+        return componentDescriptor.getParamMap();
     }
     
     public String getName() throws GluException

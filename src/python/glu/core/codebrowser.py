@@ -19,6 +19,8 @@ from glu.languages        import *
 from org.mulesource.glu.util          import Url
 from org.mulesource.glu.component.api import HTTP;
 
+EXCLUDE_PREFIXES = [ "_" ]
+
 def getComponentClass(uri):
     """
     Return the specified component class, based on a given URI.
@@ -90,15 +92,16 @@ class CodeBrowser(BaseBrowser):
         @rtype:   Result
 
         """
-        # It's the responsibility of the browser class to provide breadcrums
-        self.breadcrums = [ ("Home", settings.DOCUMENT_ROOT), ("Code", settings.PREFIX_CODE) ]
+        # It's the responsibility of the browser class to provide breadcrumbs
+        self.breadcrumbs = [ ("Home", settings.DOCUMENT_ROOT), ("Code", settings.PREFIX_CODE) ]
 
         if self.request.getRequestPath() == settings.PREFIX_CODE:
             #
             # Just show the home page of the code browser (list of all installed code)
             #
             data = dict([ (name, { "uri" : Url(class_name().getCodeUri()), "desc" : class_name().getDesc() } ) \
-                                for (name, class_name) in _CODE_MAP.items() ])
+                                for (name, class_name) in _CODE_MAP.items() \
+                                    if name[0] not in EXCLUDE_PREFIXES ])
         else:
             # Path elements (the known code prefix is stripped off)
             path_elems = self.request.getRequestPath()[len(settings.PREFIX_CODE):].split("/")[1:]
@@ -110,7 +113,7 @@ class CodeBrowser(BaseBrowser):
                 return Result.notFound("Unknown component")
             component          = component_class()
             component_home_uri = component.getCodeUri()
-            self.breadcrums.append((component_name, component_home_uri))
+            self.breadcrumbs.append((component_name, component_home_uri))
 
             if len(path_elems) == 1:
                 #
@@ -118,6 +121,7 @@ class CodeBrowser(BaseBrowser):
                 #
                 data = component.getMetaData()
                 data = languageStructToPython(component, data)
+                self.context_header.append(("[ Create resource ]", settings.PREFIX_RESOURCE+"/_createResourceForm/form/"+component_name, "target=blank"))
             else:
                 #
                 # Some sub-detail of the requested component was requested
@@ -125,7 +129,7 @@ class CodeBrowser(BaseBrowser):
                 sub_name = path_elems[1]
                 if sub_name == "doc":
                     data       = component.getDocs()
-                    self.breadcrums.append(("Doc", component_home_uri + "/doc"))
+                    self.breadcrumbs.append(("Doc", component_home_uri + "/doc"))
                 else:
                     return Result.notFound("Unknown code detail")
                 

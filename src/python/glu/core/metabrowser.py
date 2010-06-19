@@ -46,7 +46,7 @@ class MetaBrowser(BaseBrowser):
         @rtype:   Result
         
         """
-        self.breadcrums = [ ("Home","/") ]
+        self.breadcrumbs = [ ("Home","/") ]
 
         path = self.request.getRequestPath()
         if path in [ "/", settings.PREFIX_META ]:
@@ -61,7 +61,7 @@ class MetaBrowser(BaseBrowser):
             result = Result.ok(data)
             
         elif path == settings.PREFIX_META + "/doc":
-            self.breadcrums.append(("Doc", settings.PREFIX_META + "/doc"))
+            self.breadcrumbs.append(("Doc", settings.PREFIX_META + "/doc"))
             result = Result.ok(settings.get_docs())
         else:
             result = Result.notFound("Don't know this meta page")

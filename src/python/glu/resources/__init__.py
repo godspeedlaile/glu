@@ -41,6 +41,7 @@ from org.mulesource.glu.util import Url
 
 
 EXCLUDED_NAMES = [ "readme.txt" ]
+EXCLUDE_PREFIXES = [ "_" ]
 
 def getResourceUri(resource_name):
     """
@@ -122,7 +123,8 @@ def listResources():
     dir_list = STORAGE_OBJECT.listResourcesInStorage()
     out = {}
     for resource_name in dir_list:
-        if resource_name.lower() not in EXCLUDED_NAMES:
+        rname = resource_name.lower()
+        if rname not in EXCLUDED_NAMES  and  rname[0] not in EXCLUDE_PREFIXES:
             resource_dict = retrieveResourceFromStorage(getResourceUri(resource_name), only_public=True)
             if resource_dict:
                 out[resource_name] = dict(uri=Url(resource_dict['uri']), desc=resource_dict['desc'])

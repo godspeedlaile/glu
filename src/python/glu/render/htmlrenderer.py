@@ -28,18 +28,23 @@ class HtmlRenderer(BaseRenderer):
     """
     CONTENT_TYPE = "text/html"
 
-    def __init__(self, renderer_args, breadcrums):
+    def __init__(self, renderer_args, breadcrumbs, context_header=None):
         """
         Initialize the renderer.
         
-        @param renderer_args: A dictionary of flags, which can influence the
-                              output. The flags are explained in the class docstring.
-        @type renderer_args:  dict
+        @param renderer_args:  A dictionary of flags, which can influence the
+                               output. The flags are explained in the class docstring.
+        @type renderer_args:   dict
         
-        @param breadcrums:    The breadcrums for this request. Defined as a list
-                              of (name,uri) tuples, for navigation. Breadcrums are
-                              maintained by the browser class for this request.
-        @type breadcrums:     list
+        @param breadcrumbs:    The breadcrumbs for this request. Defined as a list
+                               of (name,uri) tuples, for navigation. Breadcrumbs are
+                               maintained by the browser class for this request.
+        @type breadcrumbs:     list
+
+        @param context_header: Additional headers or menus, which are to be displayed
+                               under some circumstances. Example: The 'create' menu
+                               item, which is shown when a component is viewed.
+        @type context_header:  list
         
         """
         super(HtmlRenderer, self).__init__(renderer_args)
@@ -47,31 +52,35 @@ class HtmlRenderer(BaseRenderer):
         self.table_headers    = False if self.renderer_args.get('no_table_headers') else True
         self.draw_indices     = False if self.renderer_args.get('no_list_indices') else True
         self.draw_borders, self.border_width = (False,0) if self.renderer_args.get('no_borders') else (True,1)
-        self.breadcrums       = breadcrums
+        self.breadcrumbs      = breadcrumbs
+        self.context_header   = context_header
         
         self.header = settings.HTML_HEADER + \
-                      '%s<br><hr>' % (self.__render_breadcrums(self.breadcrums))
+                      '%s<br><hr>' % (self.__render_breadcrumbs(self.breadcrumbs))
+        if context_header:
+            self.header += ' &nbsp; '.join(['<a %s href="%s">%s</a><br>' % (options, uri, name) for (name, uri, options) in context_header ])
+            self.header += "<br>"
                       
                       
-    def __render_breadcrums(self, breadcrums):
+    def __render_breadcrumbs(self, breadcrumbs):
         """
-        Output HTML for breadcrums.
+        Output HTML for breadcrumbs.
         
-        Breadcrums are given as a list of tuples, with each tuple containing
-        a (name,URI). The last breadcrum should not be rendered as a clickable
+        Breadcrumbs are given as a list of tuples, with each tuple containing
+        a (name,URI). The last breadcrumb should not be rendered as a clickable
         link.
         
-        @param breadcrums:    List of breadcrums.
-        @type breadcrums:     list
+        @param breadcrumbs:   List of breadcrumbs.
+        @type breadcrumbs:    list
         
-        @return:              HTML for breadcrums.
+        @return:              HTML for breadcrumbs.
         @rtype:               string
         
         """
         segments = []
-        for i, elem in enumerate(breadcrums):
+        for i, elem in enumerate(breadcrumbs):
             name, uri = elem
-            if i < len(breadcrums)-1:
+            if i < len(breadcrumbs)-1:
                 # All but the last element are rendered as clickable links
                 segments.append('<a href="%s">%s</a>' % (uri, name))
             else:

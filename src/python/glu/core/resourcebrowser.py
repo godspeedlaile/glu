@@ -86,8 +86,8 @@ class ResourceBrowser(BaseBrowser):
         method = self.request.getRequestMethod()
 
         if method == HTTP.GET_METHOD:
-            # It's the responsibility of the browser class to provide breadcrums
-            self.breadcrums = [ ("Home", settings.DOCUMENT_ROOT), ("Resource", settings.PREFIX_RESOURCE) ]
+            # It's the responsibility of the browser class to provide breadcrumbs
+            self.breadcrumbs = [ ("Home", settings.DOCUMENT_ROOT), ("Resource", settings.PREFIX_RESOURCE) ]
 
         if self.request.getRequestPath() == settings.PREFIX_RESOURCE:
             #
@@ -133,7 +133,7 @@ class ResourceBrowser(BaseBrowser):
             services              = public_resource_def['services']
 
             if method == HTTP.GET_METHOD:
-                self.breadcrums.append((resource_name, resource_home_uri))
+                self.breadcrumbs.append((resource_name, resource_home_uri))
 
             # Was there more to access?
             if len(path_elems) > 1:
@@ -165,7 +165,7 @@ class ResourceBrowser(BaseBrowser):
                     result = Result.internalServerError("Internal server error. Details have been logged...")
 
                 if result.getStatus() != HTTP.NOT_FOUND  and  method == HTTP.GET_METHOD  and  service_name in services:
-                    self.breadcrums.append((service_name, services[service_name]['uri']))
+                    self.breadcrumbs.append((service_name, services[service_name]['uri']))
                     
                 return result
 
