@@ -10,6 +10,7 @@ CTL_SCRIPT_BODY="bin/frags/_ctl_frg"
 CTL_SCRIPT="gluctl"
 COMPILE_SCRIPT_BODY="bin/frags/_compile_frg"
 COMPILE_SCRIPT="glucompile"
+MAKEJARS_SCRIPT="makejars"
 GLU_BIN_DIR="bin"
 PID_FILE="glu.pid"
 START_STOP_SCRIPT_NAME="glu_start_stop_daemon"
@@ -25,9 +26,13 @@ function error_report
 
 # Test whether an executable can be found.
 # Name of executable as 1. param
-# Error text as 2. param
+#
+# Error text as 2. param. If this is an empty string then we fail
+# quietly, not aborting the script.
+#
 # Flag value ('y' or 'n') as 3. param indicates
 # whether we exit in case of error ("n" or if not defined), or return 1 ("y").
+#
 # The found executable is returned in $EXEC_PATH variable.
 EXEC_PATH=""
 function exec_test
@@ -35,6 +40,10 @@ function exec_test
     EXEC_TEST=`builtin type -P $1`
     if [ -z "$EXEC_TEST" ]; then
 
+        if [ -z "$2" ]; then
+            # No error message specified, thus fail quietly
+            return 1
+        fi
         error_report "I can't find a '$1' executable.\n""$2"
         if [ -z "$3"  -o  "$3" == "n" ]; then
             exit 1
@@ -109,20 +118,35 @@ echo -e "\n=== Welcome to the Glu installer.\n=== (c) 2010 MuleSoft.
 echo -e "#!/bin/bash\n\n# Auto generated during install...\n\n" > $ENVIRON_TMP_FILE
 
 # Check whether a proper JVM is installed.
-exec_test "java" "Please install a JAVA SDK (at least version 1.6) and make it available in the path."
+exec_test "java" "Please install a JAVA SDK (at least version 1.6) or runtime and make it available in the path."
 JAVA_EXECUTABLE=$EXEC_PATH
 echo 'JAVA_EXECUTABLE='$JAVA_EXECUTABLE >> $ENVIRON_TMP_FILE
 
-exec_test "javac" "Please install a Java SDK (at least version 1.6) and make it available in the path."
-JAVAC_EXECUTABLE=$EXEC_PATH
-echo 'JAVAC_EXECUTABLE='$JAVAC_EXECUTABLE >> $ENVIRON_TMP_FILE
+#
+# Testing for javac. Fail quietly, since not having JAVAC is permissible,
+# it just doesn't allow us to compile Java components.
+#
+exec_test "javac" ""
+if [ $? == 0 ]; then
+    JAVAC_EXECUTABLE=$EXEC_PATH
+    echo 'JAVAC_EXECUTABLE='$JAVAC_EXECUTABLE >> $ENVIRON_TMP_FILE
+else
+    if [ [ ! -f "$GLU_HOME/lib/glu.jar" ] -o  [ ! -f "$GLU_HOME/lib/json.jar" ] ]; then
+        error_report "No Java compiler (javac) could be found and no JAR files are provides."
+        exit 1
+    fi
+    echo -e "\n**** Please note: No 'javac' executable (Java compiler) could be found."
+    echo -e "**** Installation continues, since JAR files are provided. However, you"
+    echo -e "**** will need to have a Java compiler in order to create your own Java"
+    echo -e "**** components.\n"
+fi
 
 # Check version of the java compiler and java runtime
-case "`javac -version 2>&1`" in 
-  *1.6*) ;;
-  *) error_report "Installed Java compiler does not seem to be version 1.6."
-     exit 1;;
-esac 
+#case "`javac -version 2>&1`" in 
+#  *1.6*) ;;
+#  *) error_report "Installed Java compiler does not seem to be version 1.6."
+#     exit 1;;
+#esac 
 case "`java -version 2>&1`" in 
   *1.6*) ;;
   *) error_report "Installed Java run time does not seem to be version 1.6."
@@ -304,16 +328,16 @@ echo 'GLU_HOME='$GLU_HOME >> $ENVIRON_TMP_FILE
 # Adding jython to our classpath
 #
 if [ -z $CLASSPATH ]; then
-    CLASSPATH="$JYTHON_JAR:$GLU_HOME/src/java"
+    CLASSPATH="$JYTHON_JAR:$GLU_HOME/src/java:$GLU_HOME/lib/*"
 else
-    CLASSPATH="$CLASSPATH:$JYTHON_JAR:$GLU_HOME/src/java"
+    CLASSPATH="$CLASSPATH:$JYTHON_JAR:$GLU_HOME/src/java:$GLU_HOME/lib/*"
 fi
 echo 'export CLASSPATH='$CLASSPATH >> $ENVIRON_TMP_FILE
 
 #
 # Setting the $VERSION variable
 #
-VERSION=`cat $GLU_HOME/VERSION`
+VERSION=`cat $GLU_HOME/conf/VERSION`
 echo 'VERSION='$VERSION >> $ENVIRON_TMP_FILE
 
 #
@@ -346,16 +370,22 @@ fi
 script_combiner $ENVIRON_TMP_FILE  $GLU_HOME/bin/frags/_ctl_frg        $GLU_HOME/$CTL_SCRIPT 
 script_combiner $ENVIRON_TMP_FILE  $GLU_HOME/bin/frags/_compile_frg    $GLU_HOME/$GLU_BIN_DIR/$COMPILE_SCRIPT
 script_combiner $ENVIRON_TMP_FILE  $GLU_HOME/bin/frags/_start_stop_frg $GLU_HOME/$GLU_BIN_DIR/$START_STOP_SCRIPT_NAME
+script_combiner $ENVIRON_TMP_FILE  $GLU_HOME/bin/frags/_makejars_frg   $GLU_HOME/$GLU_BIN_DIR/$MAKEJARS_SCRIPT
 
 rm $ENVIRON_TMP_FILE
 
 #
 # Compiling all Java sources
 #
-$GLU_HOME/$GLU_BIN_DIR/$COMPILE_SCRIPT all
-if [ ?$ == 1 ]; then
-    error_report "Compilation failed. Cannot continue..."
-    exit 1
+# Only if JAR files are not provided.
+#
+if [ ! -f "$GLU_HOME/lib/glu.jar"  -o  ! -f "$GLU_HOME/lib/json.jar"  ]; then
+    echo "No JAR files where found. Attempting to compile sources..."
+    $GLU_HOME/$GLU_BIN_DIR/$COMPILE_SCRIPT all
+    if [ ?$ == 1 ]; then
+        error_report "Compilation failed. Cannot continue..."
+        exit 1
+    fi
 fi
 
 

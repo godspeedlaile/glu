@@ -4,6 +4,15 @@
 # Body of the glucompile script
 #
 
+if [ -z "$JAVAC_EXECUTABLE" ]; then
+    echo -e "\n**** No 'javac' executable (Java compiler) was found."
+    echo -e "**** Cannot compile Java code..."
+    echo -e "**** To compile Java code, please install a Java 6 SDK"
+    echo -e "**** and re-run the install script...\n"
+    exit 1
+fi
+
+
 COMPILE_OPTIONS=-nowarn
 
 #

@@ -1,0 +1,14 @@
+
+
+#
+# Script used to create the JAR files and remove class
+# files from the source directories
+#
+
+bin/glucompile all
+cd $GLU_HOME/src/java
+jar cvf json.jar `find org/json -name '*.class'`
+jar cvf glu.jar `find org/mulesource -name '*.class'`
+mv *.jar $GLU_HOME/lib
+rm -f `find . -name '*.class'`
+
