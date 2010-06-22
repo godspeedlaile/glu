@@ -116,7 +116,7 @@ The user submits the filled-out form and a new resource is created.
         if params:
             for pname, pdef in params.items():
                 if not pdef.required:
-                    opt_str = "<br>optional, default: %s" % pdef.default
+                    opt_str = "<br>optional, default: %s" % pdef.getDefaultVal()
                 else:
                     opt_str = ""
                 param_fields_html += \

@@ -35,7 +35,7 @@ public abstract class ParameterDef
         this.required = required;
     }
     
-    protected abstract Object getDefaultVal();
+    public abstract Object getDefaultVal();
     
     public HashMap<String, Object> asDict()
     {

@@ -53,7 +53,7 @@ public class ParameterDefNumber extends ParameterDef
     }
 
     @Override
-    protected Object getDefaultVal()
+    public Object getDefaultVal()
     {
         return defaultVal;
     }

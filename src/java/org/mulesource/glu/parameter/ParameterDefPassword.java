@@ -31,7 +31,7 @@ public class ParameterDefPassword extends ParameterDef
     }
 
     @Override
-    protected Object getDefaultVal()
+    public Object getDefaultVal()
     {
         return defaultVal;
     }

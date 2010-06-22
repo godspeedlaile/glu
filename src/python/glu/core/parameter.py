@@ -146,6 +146,19 @@ class ParameterDef(object):
         if not self.required and default is None:
             raise GluException("A default value is required for optional parameters")
         self.default          = default
+
+    def getDefaultVal(self):
+        """
+        Return default value.
+
+        Javaesque naming convention, because the method was first needed
+        on the Java side of things.
+
+        @return: The default value.
+        @rtype:  object
+
+        """
+        return self.default
         
     def as_dict(self):
         """
