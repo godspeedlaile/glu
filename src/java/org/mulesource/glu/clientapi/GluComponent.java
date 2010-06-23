@@ -29,7 +29,6 @@ public class GluComponent
     protected static final String            PARAMS_KEY             = "params";
     protected static final String            RCP_KEY                = "resource_creation_params";
     protected static final String            RCP_DESC_KEY           = "desc";
-    protected static final String            RCP_PUBLIC_KEY         = "public";
     protected static final String            RCP_SUGGESTED_NAME_KEY = "suggested_name";
     protected static final String            SERVICES_KEY           = "services";
     
@@ -41,7 +40,6 @@ public class GluComponent
     protected String                         uri;
     protected HashMap<String, GluParameter>  parameters;
     protected GluParameter                   rcpDescriptionParam;
-    protected GluParameter                   rcpPublicParam;
     protected GluParameter                   rcpSuggestedNameParam;
     protected HashMap<String, GluService>    services;
     
@@ -80,7 +78,6 @@ public class GluComponent
             // be surprised...
             HashMap<String, HashMap<String, ?>> rcpMap = (HashMap<String, HashMap<String, ?>>) cdesc.get(RCP_KEY);
             rcpDescriptionParam   = new GluParameter(RCP_DESC_KEY,           rcpMap.get(RCP_DESC_KEY));
-            rcpPublicParam        = new GluParameter(RCP_PUBLIC_KEY,         rcpMap.get(RCP_PUBLIC_KEY));
             rcpSuggestedNameParam = new GluParameter(RCP_SUGGESTED_NAME_KEY, rcpMap.get(RCP_SUGGESTED_NAME_KEY));
 
             // Parse the services dictionary and attempt to translate
@@ -91,6 +88,7 @@ public class GluComponent
             }
         }
         catch (Exception e) {
+            System.out.println("Exception: " + e);
             throw new GluClientException("Server error: Could not process component meta data: " + e.getMessage());
         }
     }

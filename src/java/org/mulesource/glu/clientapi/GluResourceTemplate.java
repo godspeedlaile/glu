@@ -24,7 +24,6 @@ public class GluResourceTemplate
     protected final static String     PARAMS_KEY             = "params";
     protected final static String     RCP_KEY                = "resource_creation_params";
     protected final static String     RCP_DESC_KEY           = "desc";
-    protected final static String     RCP_PUBLIC_KEY         = "public";
     protected final static String     RCP_SUGGESTED_NAME_KEY = "suggested_name";
 
     protected GluComponent            component;
@@ -75,7 +74,7 @@ public class GluResourceTemplate
     }
 
     /**
-     * Return parameter definition for this template's public flag parameter.
+     * Return parameter definition for this template's suggested name parameter.
      * 
      * @return  Representation of this parameter.
      */
