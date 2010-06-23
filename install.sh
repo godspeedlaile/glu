@@ -14,6 +14,7 @@ MAKEJARS_SCRIPT="makejars"
 GLU_BIN_DIR="bin"
 PID_FILE="glu.pid"
 START_STOP_SCRIPT_NAME="glu_start_stop_daemon"
+JSON_JAR_DOWNLOAD_LOCATION="http://repo2.maven.org/maven2/org/json/json/20090211/json-20090211.jar"
 
 # ---------------------------------------------
 # Helper functions
@@ -66,10 +67,13 @@ function download
 {
     WGET_TEST=`builtin type -P wget`
     CURL_TEST=`builtin type -P curl`
-    if [ -n "$WGET_TEST" ]; then
-        wget $1 -O $2
-    elif [ -n "$CURL_TEST" ]; then
-        curl -L $1 -o $2
+    USER_AGENT="MuleSoftGluInstaller"
+    if [ -n "$CURL_TEST" ]; then
+        curl -A "$USER_AGENT" -L $1 -o $2
+        return $?
+    elif [ -n "$WGET_TEST" ]; then
+        wget -U "$USER_AGENT" $1 -O $2
+        return $?
     else
         error_report "Need 'wget' or 'curl' for download."
         exit 1
@@ -201,6 +205,10 @@ If not then you will have to install it manually."
         else
             echo -e "Please wait for download from: "$JYTHON_DOWNLOAD_LOCATION"...\n-------------------------------------------------"
             download $JYTHON_DOWNLOAD_LOCATION $JYTHON_DOWNLOAD_FILE
+            if [ $? == 1 ]; then
+                error_report "Download failed. Aborting install..."
+                exit 1
+            fi
             echo "-------------------------------------------------"
         fi
 
@@ -380,6 +388,15 @@ rm $ENVIRON_TMP_FILE
 # Only if JAR files are not provided.
 #
 if [ ! -f "$GLU_HOME/lib/glu.jar"  -o  ! -f "$GLU_HOME/lib/json.jar"  ]; then
+    if [ ! -f "$GLU_HOME/lib/json.jar" ]; then
+        echo "Downloading third party JSON JAR. Please wait..."
+        download $JSON_JAR_DOWNLOAD_LOCATION "$GLU_HOME/lib/json.jar"
+        if [ $? == 1 ]; then
+            error_report "Download failed. Aborting install..."
+            exit 1
+        fi
+    fi
+
     echo "No JAR files where found. Attempting to compile sources..."
     $GLU_HOME/$GLU_BIN_DIR/$COMPILE_SCRIPT all
     if [ ?$ == 1 ]; then
